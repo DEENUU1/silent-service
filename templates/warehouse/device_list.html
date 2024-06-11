@@ -16,7 +16,10 @@
 </form>
 
 {% for object in object_list %}
-    {{object.name}}, {{object.quantity}}, {{object.device_type.name}} <br>
+    <a href="{% url 'warehouse:device-detail' object.id %}">{{object.name}}</a>,
+    {{object.quantity}},
+    {{object.device_type.name}}
+    <br>
 {% endfor %}
 
 </body>

@@ -46,8 +46,13 @@ class CreateDeviceView(CreateView):
     fields = ("name", "quantity", "device_type")
 
     def get_success_url(self):
-        return reverse_lazy("warehouse:device-list")#, kwargs={"pk": self.object.pk})
+        return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class DeviceDetailView(DetailView):
+    model = Device
+    template_name = "warehouse/device_detail.html"
