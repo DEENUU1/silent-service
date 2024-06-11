@@ -1,0 +1,9 @@
+from django.urls import path
+from warehouse.views import (
+    DeviceListView,
+
+)
+
+urlpatterns = [
+    path('', DeviceListView.as_view(), name='device-list'),
+]

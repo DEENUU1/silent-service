@@ -1,0 +1,20 @@
+{% load crispy_forms_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form method="GET" action="">
+    {% csrf_token %}
+    <div>{{q|crispy}}</div>
+    <button type="submit">Search</button>
+</form>
+
+{% for object in object_list %}
+    {{object.name}}, {{object.quantity}}, {{object.device_type.name}} <br>
+{% endfor %}
+
+</body>
+</html>
