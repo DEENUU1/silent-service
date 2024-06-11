@@ -6,6 +6,8 @@
 </head>
 <body>
 
+<a href="{% url 'warehouse:device-create' %}">Create device</a>
+
 <form method="GET" action="">
     {% csrf_token %}
     <div>{{q|crispy}}</div>
