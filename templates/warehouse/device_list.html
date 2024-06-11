@@ -21,6 +21,10 @@
     {{object.device_type.name}}
 
     <a href="{% url 'warehouse:device-update' object.id %}">Edytuj</a>
+    <form action="{% url 'warehouse:device-delete' object.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Usuń</button>
+    </form>
     <br>
 {% endfor %}
 

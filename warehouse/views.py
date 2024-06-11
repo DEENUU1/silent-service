@@ -12,6 +12,7 @@ from warehouse.forms import (
     SearchForm,
     DeviceTypeForm
 )
+from django.contrib import messages
 
 
 class DeviceListView(ListView):
@@ -48,6 +49,11 @@ class CreateDeviceView(CreateView):
     def get_success_url(self):
         return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Przedmiot został dodany")
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
@@ -66,6 +72,21 @@ class DeviceUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Przedmiot został zaktualizowany")
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class DeleteDeviceView(DeleteView):
+    model = Device
+    success_url = reverse_lazy("warehouse:device-list")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Przedmiot został usunięty")
+        return queryset
