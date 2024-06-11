@@ -9,6 +9,7 @@
 <form method="GET" action="">
     {% csrf_token %}
     <div>{{q|crispy}}</div>
+    <div>{{device_types|crispy}}</div>
     <button type="submit">Search</button>
 </form>
 

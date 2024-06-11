@@ -7,7 +7,10 @@ from django.views.generic import (
     DeleteView,
 )
 from warehouse.models import Device, DeviceType
-from warehouse.forms import SearchForm
+from warehouse.forms import (
+    SearchForm,
+    DeviceTypeForm
+)
 
 
 class DeviceListView(ListView):
@@ -23,9 +26,14 @@ class DeviceListView(ListView):
         if search_query:
             queryset = queryset.filter(name__icontains=search_query)
 
+        device_type = self.request.GET.get("device_type")
+        if device_type:
+            queryset = queryset.filter(device_type__name=device_type)
+
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["q"] = SearchForm(self.request.GET)
+        context["device_types"] = DeviceTypeForm(self.request.GET)
         return context
