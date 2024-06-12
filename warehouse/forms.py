@@ -15,5 +15,6 @@ class DeviceTypeForm(forms.Form):
     device_type = forms.ModelChoiceField(
         queryset=DeviceType.objects.all(),
         widget=forms.Select(attrs={"class": "form-control"}),
-        required=False
+        required=False,
+        label="Typ urządzenia",
     )

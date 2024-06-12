@@ -1,10 +1,10 @@
 from django.urls import path
 from warehouse.views import (
     DeviceListView,
-    CreateDeviceView,
+    DeviceCreateView,
     DeviceDetailView,
     DeviceUpdateView,
-    DeleteDeviceView,
+    DeviceDeleteView,
 
 )
 
@@ -12,8 +12,8 @@ app_name = "warehouse"
 
 urlpatterns = [
     path('', DeviceListView.as_view(), name='device-list'),
-    path('create/', CreateDeviceView.as_view(), name='device-create'),
+    path('create/', DeviceCreateView.as_view(), name='device-create'),
     path('<int:pk>/', DeviceDetailView.as_view(), name='device-detail'),
     path('<int:pk>/update/', DeviceUpdateView.as_view(), name='device-update'),
-    path('<int:pk>/delete/', DeleteDeviceView.as_view(), name='device-delete'),
+    path('<int:pk>/delete/', DeviceDeleteView.as_view(), name='device-delete'),
 ]

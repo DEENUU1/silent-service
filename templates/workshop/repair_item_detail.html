@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title%} Serwis | {{object.serial_number}} {% endblock %}
+
+{% block content %}
+
+
+{{object.serial_number}} <br>
+{{object.password}} <br>
+{{object.visual_status}} <br>
+{{object.todo}} <br>
+{{object.done}} <br>
+{{object.status}} <br>
+{{object.priority}} <br>
+
+{% for cost in costs %}
+    {{cost.cost_type}}
+    {{cost.amount}}
+{% endfor %}
+
+{% endblock %}

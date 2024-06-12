@@ -41,7 +41,7 @@ class DeviceListView(LoginRequiredMixin, ListView):
         return context
 
 
-class CreateDeviceView(LoginRequiredMixin, CreateView):
+class DeviceCreateView(LoginRequiredMixin, CreateView):
     model = Device
     template_name = "warehouse/device_create.html"
     fields = ("name", "quantity", "device_type")
@@ -53,10 +53,6 @@ class CreateDeviceView(LoginRequiredMixin, CreateView):
         queryset = super().get_queryset()
         messages.success(self.request, "Przedmiot został dodany")
         return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
 class DeviceDetailView(LoginRequiredMixin, DetailView):
@@ -77,12 +73,8 @@ class DeviceUpdateView(LoginRequiredMixin, UpdateView):
         messages.success(self.request, "Przedmiot został zaktualizowany")
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
-
-class DeleteDeviceView(LoginRequiredMixin, DeleteView):
+class DeviceDeleteView(LoginRequiredMixin, DeleteView):
     model = Device
     success_url = reverse_lazy("warehouse:device-list")
 
