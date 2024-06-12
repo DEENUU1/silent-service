@@ -10,21 +10,42 @@
 
 <form method="GET" action="">
     {% csrf_token %}
-    <div>{{q|crispy}}</div>
-    <button type="submit">Szukaj</button>
+    <div class="form-row align-items-center">
+        <div class="col">
+            <div>{{q|crispy}}</div>
+        </div>
+    </div>
+    <button class="btn btn-primary form-control" type="submit">Szukaj</button>
 </form>
 
-{% for object in object_list %}
-    <a href="{% url 'workshop:customer-detail' object.id %}">{{object.name}}</a>,
-    {{object.email}},
-    {{object.phone}}
 
-    <a href="{% url 'workshop:customer-update' object.id %}">Edytuj</a>
-    <form action="{% url 'workshop:customer-delete' object.id %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Usuń</button>
-    </form>
-    <br>
-{% endfor %}
+<table class="table table-hover mt-5">
+    <thead>
+        <tr>
+            <th scope="col">Imie i nazwisko</th>
+            <th scope="col">Email</th>
+            <th scope="col">Numer telefonu</th>
+            <th scope="col">Edytuj</th>
+            <th scope="col">Usuń</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in object_list %}
+            <tr>
+                <th scope="row"><a href="{% url 'workshop:customer-detail' object.id %}">{{object.name}}</a></th>
+                <th><a href="mailto:{{object.email}}">{{object.email}}</a></th>
+                <th>{{object.phone}}</th>
+                <th><a href="{% url 'workshop:customer-update' object.id %}">Edytuj</a></th>
+                <th>
+                    <form action="{% url 'workshop:customer-delete' object.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Usuń</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
+{% include "base/pagination.html" %}
 {% endblock %}
