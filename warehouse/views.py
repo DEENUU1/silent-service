@@ -12,9 +12,10 @@ from warehouse.forms import (
     DeviceTypeForm
 )
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class DeviceListView(ListView):
+class DeviceListView(LoginRequiredMixin, ListView):
     model = Device
     template_name = "warehouse/device_list.html"
     paginate_by = 50
@@ -40,7 +41,7 @@ class DeviceListView(ListView):
         return context
 
 
-class CreateDeviceView(CreateView):
+class CreateDeviceView(LoginRequiredMixin, CreateView):
     model = Device
     template_name = "warehouse/device_create.html"
     fields = ("name", "quantity", "device_type")
@@ -58,12 +59,12 @@ class CreateDeviceView(CreateView):
         return context
 
 
-class DeviceDetailView(DetailView):
+class DeviceDetailView(LoginRequiredMixin, DetailView):
     model = Device
     template_name = "warehouse/device_detail.html"
 
 
-class DeviceUpdateView(UpdateView):
+class DeviceUpdateView(LoginRequiredMixin, UpdateView):
     model = Device
     template_name = "warehouse/device_update.html"
     fields = ("name", "quantity", "device_type")
@@ -81,7 +82,7 @@ class DeviceUpdateView(UpdateView):
         return context
 
 
-class DeleteDeviceView(DeleteView):
+class DeleteDeviceView(LoginRequiredMixin, DeleteView):
     model = Device
     success_url = reverse_lazy("warehouse:device-list")
 
