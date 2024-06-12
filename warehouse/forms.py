@@ -4,7 +4,7 @@ from warehouse.models import DeviceType
 
 class SearchForm(forms.Form):
     search_query = forms.CharField(
-        label="Search",
+        label="Szukaj",
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={"placeholder": "Znajdź urządzenie"}),

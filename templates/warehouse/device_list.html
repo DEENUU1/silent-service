@@ -10,22 +10,44 @@
 
 <form method="GET" action="">
     {% csrf_token %}
-    <div>{{q|crispy}}</div>
-    <div>{{device_types|crispy}}</div>
-    <button type="submit">Szukaj</button>
+    <div class="form-row align-items-center">
+        <div class="col">
+            <div>{{ q|crispy }}</div>
+        </div>
+        <div class="col">
+            <div>{{ device_types|crispy }}</div>
+        </div>
+    </div>
+    <button class="btn btn-primary form-control" type="submit">Szukaj</button>
 </form>
 
-{% for object in object_list %}
-    <a href="{% url 'warehouse:device-detail' object.id %}">{{object.name}}</a>,
-    {{object.quantity}},
-    {{object.device_type.name}}
+<table class="table table-hover mt-5">
+    <thead>
+        <tr>
+            <th scope="col">Nazwa</th>
+            <th scope="col">Liczba sztuk</th>
+            <th scope="col">Typ</th>
+            <th scope="col">Edytuj</th>
+            <th scope="col">Usuń</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in object_list %}
+            <tr>
+                <th scope="row"><a href="{% url 'warehouse:device-detail' object.id %}">{{object.name}}</a></th>
+                <th>{{object.quantity}}</th>
+                <th>{{object.device_type.name}}</th>
+                <th><a href="{% url 'warehouse:device-update' object.id %}">Edytuj</a></th>
+                <th>
+                    <form action="{% url 'warehouse:device-delete' object.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Usuń</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    <a href="{% url 'warehouse:device-update' object.id %}">Edytuj</a>
-    <form action="{% url 'warehouse:device-delete' object.id %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Usuń</button>
-    </form>
-    <br>
-{% endfor %}
-
+{% include "base/pagination.html" %}
 {% endblock %}

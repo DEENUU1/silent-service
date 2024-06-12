@@ -15,7 +15,15 @@
 {{object.status}} <br>
 {{object.priority}} <br>
 
+
+{{total_costs.cost}} <br>
+
+{{total_costs.profit}} <br>
+
+{{total_costs.total}} <br>
+
 <a href="{% url 'workshop:costs-create' %}">Dodaj koszty</a>
+
 
 
 {% for cost in costs %}

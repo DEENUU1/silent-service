@@ -15,6 +15,7 @@ from workshop.forms import (
     RepairItemPriorityForm,
     RepairItemStatusForm,
 )
+from workshop.services.costs import calculate_total_costs_by_repair_item
 
 
 class CustomerListView(LoginRequiredMixin, ListView):
@@ -165,7 +166,7 @@ class RepairItemDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["costs"] = Costs.objects.filter(repair_item=self.object)
-        # TODO costs summary
+        context["total_costs"] = calculate_total_costs_by_repair_item(self.object)
         return context
 
 
