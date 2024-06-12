@@ -1,11 +1,10 @@
+{% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
+
+{% block meta_title%} Serwis | Edytuj {{object.name}} {% endblock %}
+
+{% block content %}
 
 <div class="container my-5">
     <form method="POST">
@@ -15,5 +14,4 @@
     </form>
 </div>
 
-</body>
-</html>
+{% endblock %}}

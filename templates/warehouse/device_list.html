@@ -1,10 +1,10 @@
+{% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+
+
+{% block meta_title%} Serwis | Przedmioty {% endblock %}
+
+{% block content %}
 
 <a href="{% url 'warehouse:device-create' %}">Create device</a>
 
@@ -28,5 +28,4 @@
     <br>
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}

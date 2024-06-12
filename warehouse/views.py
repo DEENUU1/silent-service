@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -90,3 +89,6 @@ class DeleteDeviceView(DeleteView):
         queryset = super().get_queryset()
         messages.success(self.request, "Przedmiot został usunięty")
         return queryset
+
+
+cl

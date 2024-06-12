@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # apps
     "warehouse",
+    "users",
 
     # third party
     "crispy_forms",
