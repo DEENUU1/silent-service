@@ -5,12 +5,14 @@ from workshop.views import (
     CustomerUpdateView,
     CustomerDeleteView,
     CustomerDetailView,
-    CustomerCreateView,
     RepairItemListView,
     RepairItemCreateView,
     RepairItemDeleteView,
     RepairItemDetailView,
     RepairItemUpdateView,
+    CostsCreateView,
+    CostsUpdateView,
+    CostsDeleteView,
 )
 
 app_name = "workshop"
@@ -28,4 +30,8 @@ urlpatterns = [
     path('<int:pk>/delete/', RepairItemDeleteView.as_view(), name="repair-item-delete"),
     path('<int:pk>/', RepairItemDetailView.as_view(), name="repair-item-detail"),
     path('<int:pk>/update/', RepairItemUpdateView.as_view(), name="repair-item-update"),
+
+    path('costs/create/', CostsCreateView.as_view(), name="costs-create"),
+    path('costs/<int:pk>/delete/', CostsDeleteView.as_view(), name="costs-delete"),
+    path('costs/<int:pk>/update/', CostsUpdateView.as_view(), name="costs-update"),
 ]

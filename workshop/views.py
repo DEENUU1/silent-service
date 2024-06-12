@@ -158,7 +158,7 @@ class RepairItemDeleteView(LoginRequiredMixin, DeleteView):
         return queryset
 
 
-class  RepairItemDetailView(LoginRequiredMixin, DetailView):
+class RepairItemDetailView(LoginRequiredMixin, DetailView):
     model = RepairItem
     template_name = "workshop/repair_item_detail.html"
 
@@ -167,3 +167,41 @@ class  RepairItemDetailView(LoginRequiredMixin, DetailView):
         context["costs"] = Costs.objects.filter(repair_item=self.object)
         # TODO costs summary
         return context
+
+
+class CostsCreateView(LoginRequiredMixin, CreateView):
+    model = Costs
+    fields = ["amount", "cost_type", "repair_item"]
+    template_name = "workshop/costs_create.html"
+
+    def get_success_url(self):
+        return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.repair_item.pk})
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Koszt został dodany")
+        return queryset
+
+
+class CostsUpdateView(LoginRequiredMixin, UpdateView):
+    model = Costs
+    fields = ["amount", "cost_type", "repair_item"]
+    template_name = "workshop/costs_update.html"
+
+    def get_success_url(self):
+        return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.repair_item.pk})
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Koszt został zaaktualizowany")
+        return queryset
+
+
+class CostsDeleteView(LoginRequiredMixin, DeleteView):
+    model = Costs
+    success_url = reverse_lazy("workshop:repair-item-list")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Koszt został usunięty")
+        return queryset

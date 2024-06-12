@@ -15,9 +15,18 @@
 {{object.status}} <br>
 {{object.priority}} <br>
 
+<a href="{% url 'workshop:costs-create' %}">Dodaj koszty</a>
+
+
 {% for cost in costs %}
     {{cost.cost_type}}
     {{cost.amount}}
+    <a href="{% url 'workshop:costs-update' object.id %}">Edytuj</a>
+    <form action="{% url 'workshop:costs-delete' object.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Usuń</button>
+    </form>
+    <br>
 {% endfor %}
 
 {% endblock %}
