@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title%} Serwis | Klienci {% endblock %}
+
+{% block content %}
+
+<a href="{% url 'workshop:customer-create' %}">Stwórz klienta</a>
+
+<form method="GET" action="">
+    {% csrf_token %}
+    <div>{{q|crispy}}</div>
+    <button type="submit">Szukaj</button>
+</form>
+
+{% for object in object_list %}
+    <a href="{% url 'workshop:customer-detail' object.id %}">{{object.name}}</a>,
+    {{object.email}},
+    {{object.phone}}
+
+    <a href="{% url 'workshop:customer-update' object.id %}">Edytuj</a>
+    <form action="{% url 'workshop:customer-delete' object.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Usuń</button>
+    </form>
+    <br>
+{% endfor %}
+
+{% endblock %}

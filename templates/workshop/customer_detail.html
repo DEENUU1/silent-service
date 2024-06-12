@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title%} Serwis | {{object.name}} {% endblock %}
+
+{% block content %}
+
+{{object.name}} <br>
+
+{{object.email}} <br>
+
+{{object.phone}} <br>
+
+{% for item in repair_items %}
+    {{item.serial_number}} <br>
+    {{item.password}} <br>
+    {{item.visual_status}} <br>
+    {{item.todo}} <br>
+    {{item.done}} <br>
+    {{item.status}} <br>
+    {{item.priority}} <br>
+{% endfor %}
+
+{% endblock %}

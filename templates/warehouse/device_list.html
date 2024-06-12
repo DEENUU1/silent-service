@@ -12,7 +12,7 @@
     {% csrf_token %}
     <div>{{q|crispy}}</div>
     <div>{{device_types|crispy}}</div>
-    <button type="submit">Search</button>
+    <button type="submit">Szukaj</button>
 </form>
 
 {% for object in object_list %}

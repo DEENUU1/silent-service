@@ -30,6 +30,7 @@ class RepairItem(BaseModel):
     done = models.TextField(blank=True, null=True)
     status = models.BooleanField(default=False)
     priority = models.CharField(max_length=100, choices=PRIORITY, default='low')
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='repair_items')
 
     def __str__(self):
         return self.serial_number
