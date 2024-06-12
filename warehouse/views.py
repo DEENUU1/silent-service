@@ -6,7 +6,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from warehouse.models import Device, DeviceType
+from warehouse.models import Device
 from warehouse.forms import (
     SearchForm,
     DeviceTypeForm
@@ -89,6 +89,3 @@ class DeleteDeviceView(DeleteView):
         queryset = super().get_queryset()
         messages.success(self.request, "Przedmiot został usunięty")
         return queryset
-
-
-cl
