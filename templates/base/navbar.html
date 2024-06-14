@@ -45,22 +45,15 @@
 
         <!-- Right elements -->
         <div class="d-flex align-items-center">
-
-            <!-- Avatar -->
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                    {% if user.is_authenticated %}
-                    <li><a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a></li>
-                    {% else %}
-                    <li><a class="dropdown-item" href="{% url 'users:register' %}">Register</a></li>
-                    <li><a class="dropdown-item" href="{% url 'users:login' %}">Login</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+            {% if user.is_authenticated %}
+                <form action="{% url 'users:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-link text-dark" type="submit">Logout</button>
+                </form>
+            {% else %}
+                <a class="dropdown-item" href="{% url 'users:register' %}">Register</a>
+                <a class="dropdown-item" href="{% url 'users:login' %}">Login</a>
+            {% endif %}
         </div>
         <!-- Right elements -->
     </div>

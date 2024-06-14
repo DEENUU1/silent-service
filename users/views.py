@@ -41,6 +41,6 @@ class LoginUserView(FormView):
 
 
 class LogoutUserView(LogoutView):
-    def get(self, request):
+    def post(self, request):
         logout(request)
-        return redirect("warehouse:device-list")
+        return redirect("users:login")

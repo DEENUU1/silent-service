@@ -1,40 +1,100 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
 
-
-{% block meta_title%} Serwis | {{object.serial_number}} {% endblock %}
+{% block meta_title %} Serwis | {{ object.serial_number }} {% endblock %}
 
 {% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3">Szczegóły urządzenia: {{ object.serial_number }}</h1>
+        <div>
+            <a href="{% url 'workshop:repair-item-update' object.id %}" class="btn btn-primary">Edytuj</a>
+            <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST" class="d-inline-block">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Usuń</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <div class="d-flex justify-content-start gap-2">
+            <div class="mb-2">
+                {% if object.status %}
+                <span style="background-color: rgba(86,255,0,0.73);"
+                      class="p-2 rounded font-weight-bold">Zrobione</span>
+                {% else %}
+                <span style="background-color: rgba(255, 0, 0, 0.3);"
+                      class="p-2 rounded font-weight-bold">Zrobione</span>
+                {% endif %}
+            </div>
+            <div class="mb-2">
+                {% if object.priority == "low" %}
+                <span style="background-color: rgba(86,255,0,0.73);" class="p-2 rounded font-weight-bold">Niski</span>
+                {% elif object.priority == "mid" %}
+                <span style="background-color: rgba(255,145,0,0.73);" class="p-2 rounded font-weight-bold">Średni</span>
+                {% elif object.priority == "high" %}
+                <span style="background-color: rgba(255, 0, 0, 0.3);" class="p-2 rounded font-weight-bold">Wysoki</span>
+                {% endif %}
+            </div>
+        </div>
 
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informacje o urządzeniu</h5>
+                        <p class="card-text"><strong>Numer seryjny:</strong> {{ object.serial_number }}</p>
+                        <p class="card-text"><strong>Hasło:</strong> {{ object.password }}</p>
+                        <p class="card-text"><strong>Stan wizualny:</strong> {{ object.visual_status }}</p>
+                        <p class="card-text"><strong>Do zrobienia:</strong> {{ object.todo }}</p>
+                        <p class="card-text"><strong>Zrobione:</strong> {{ object.done }}</p>
+                        <p class="card-text"><strong>Dodatkowe informacje:</strong> {{ object.additional_info }}</p>
+                    </div>
+                </div>
+            </div>
 
-{{object.serial_number}} <br>
-{{object.password}} <br>
-{{object.visual_status}} <br>
-{{object.todo}} <br>
-{{object.done}} <br>
-{{object.status}} <br>
-{{object.priority}} <br>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informacje o kliencie</h5>
+                        <p class="card-text"><strong>Imię i nazwisko:</strong> {{ object.customer.name }}</p>
+                        <p class="card-text"><strong>Email:</strong> <a href="mailto:{{object.customer.email}}">{{object.customer.email }}</a></p>
+                        <p class="card-text"><strong>Telefon:</strong> {{ object.customer.phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Koszty</h5>
+                        <p class="card-text"><strong>Koszt całkowity:</strong> {{ total_costs.cost }}</p>
+                        <p class="card-text"><strong>Zysk:</strong> {{ total_costs.profit }}</p>
+                        <p class="card-text"><strong>Łącznie:</strong> {{ total_costs.total }}</p>
+                        <a href="{% url 'workshop:costs-create' %}" class="btn btn-success mb-3">Dodaj koszty</a>
 
-{{total_costs.cost}} <br>
-
-{{total_costs.profit}} <br>
-
-{{total_costs.total}} <br>
-
-<a href="{% url 'workshop:costs-create' %}">Dodaj koszty</a>
-
-
-
-{% for cost in costs %}
-    {{cost.cost_type}}
-    {{cost.amount}}
-    <a href="{% url 'workshop:costs-update' object.id %}">Edytuj</a>
-    <form action="{% url 'workshop:costs-delete' object.id %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Usuń</button>
-    </form>
-    <br>
-{% endfor %}
-
-{% endblock %}
+                        <div class="list-group">
+                            {% for cost in costs %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1"><strong>Typ kosztu:</strong> {{ cost.cost_type }}</p>
+                                    <p class="mb-1"><strong>Kwota:</strong> {{ cost.amount }}</p>
+                                </div>
+                                <div>
+                                    <a href="{% url 'workshop:costs-update' cost.id %}" class="btn btn-sm btn-primary">Edytuj</a>
+                                    <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST"
+                                          class="d-inline-block">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

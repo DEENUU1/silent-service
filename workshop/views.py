@@ -11,7 +11,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from workshop.models import Customer, RepairItem, Costs
 from workshop.forms import (
     SearchForm,
-    RepairItemStatusForm,
     RepairItemPriorityForm,
     RepairItemStatusForm,
 )
@@ -45,11 +44,13 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     fields = ["name", "phone", "email"]
     template_name = "workshop/customer_create.html"
-    success_url = reverse_lazy("workshop:customer-list")
+
+    def get_success_url(self):
+        messages.success(self.request, "Klient został dodany")
+        return reverse_lazy("workshop:customer-detail", kwargs={"pk": self.object.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Klient został dodany")
         return queryset
 
 
@@ -59,11 +60,11 @@ class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "workshop/customer_update.html"
 
     def get_success_url(self):
+        messages.success(self.request, "Klient został zaaktualizowany")
         return reverse_lazy("workshop:customer-detail", kwargs={"pk": self.object.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Klient został zaaktualizowany")
         return queryset
 
 
@@ -122,30 +123,49 @@ class RepairItemListView(LoginRequiredMixin, ListView):
 
 class RepairItemCreateView(LoginRequiredMixin, CreateView):
     model = RepairItem
-    fields = ["serial_number", "password", "visual_status", "todo", "done", "status", "priority", "customer"]
+    fields = [
+        "serial_number",
+        "password",
+        "visual_status",
+        "todo",
+        "additional_info",
+        "done",
+        "status",
+        "priority",
+        "customer"
+    ]
     template_name = "workshop/repair_item_create.html"
 
     def get_success_url(self):
-        success_url = reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.pk})
-        return success_url
+        messages.success(self.request, "Urządzenie zostało dodane")
+        return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Urządzenie zostało dodane")
         return queryset
 
 
 class RepairItemUpdateView(LoginRequiredMixin, UpdateView):
     model = RepairItem
-    fields = ["serial_number", "password", "visual_status", "todo", "done", "status", "priority", "customer"]
+    fields = [
+        "serial_number",
+        "password",
+        "visual_status",
+        "todo",
+        "additional_info",
+        "done",
+        "status",
+        "priority",
+        "customer"
+    ]
     template_name = "workshop/repair_item_update.html"
 
     def get_success_url(self):
+        messages.success(self.request, "Urządzenie zostało zaaktualizowane")
         return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Urządzenie zostało zaaktualizowane")
         return queryset
 
 
@@ -176,11 +196,11 @@ class CostsCreateView(LoginRequiredMixin, CreateView):
     template_name = "workshop/costs_create.html"
 
     def get_success_url(self):
+        messages.success(self.request, "Koszt został dodany")
         return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.repair_item.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Koszt został dodany")
         return queryset
 
 
@@ -190,11 +210,11 @@ class CostsUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "workshop/costs_update.html"
 
     def get_success_url(self):
+        messages.success(self.request, "Koszt został zaaktualizowany")
         return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.repair_item.pk})
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        messages.success(self.request, "Koszt został zaaktualizowany")
         return queryset
 
 
