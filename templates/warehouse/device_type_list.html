@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title%} Serwis | Kategorie {% endblock %}
+
+{% block content %}
+
+<a href="{% url 'warehouse:device-type-create' %}">Stwórz kategorię</a>
+
+<form method="GET" action="">
+    {% csrf_token %}
+    <div class="form-row align-items-center">
+        <div class="col">
+            <div>{{ q|crispy }}</div>
+        </div>
+    </div>
+    <button class="btn btn-primary form-control" type="submit">Szukaj</button>
+</form>
+
+<div class="container mt-5">
+    <div class="row">
+        {% for device_type in object_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <a href="{% url 'warehouse:device-type-detail' device_type.id %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ device_type.name }}</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p>No device types found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% include "base/pagination.html" %}
+{% endblock %}

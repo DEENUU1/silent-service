@@ -11,6 +11,15 @@ class SearchForm(forms.Form):
     )
 
 
+class DeviceTypeSearchForm(forms.Form):
+    search_query = forms.CharField(
+        label="Szukaj",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Znajdź kategorię"}),
+    )
+
+
 class DeviceTypeForm(forms.Form):
     device_type = forms.ModelChoiceField(
         queryset=DeviceType.objects.all(),
