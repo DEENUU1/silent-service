@@ -135,7 +135,7 @@ class RepairItemCreateView(LoginRequiredMixin, CreateView):
         "customer"
     ]
     template_name = "workshop/repair_item_create.html"
-
+    
     def get_success_url(self):
         messages.success(self.request, "Urządzenie zostało dodane")
         return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.pk})

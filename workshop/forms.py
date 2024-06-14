@@ -1,5 +1,4 @@
 from django import forms
-from workshop.models import RepairItem
 
 
 class SearchForm(forms.Form):

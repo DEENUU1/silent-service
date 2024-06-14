@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from utils.base_model import BaseModel
 
@@ -48,7 +49,13 @@ class Costs(BaseModel):
         ("profit", "Profit"),
     )
     cost_type = models.CharField(max_length=100, choices=COST_TYPE)
-    amount = models.DecimalField(decimal_places=2, max_digits=10)
+    amount = models.DecimalField(
+        decimal_places=2,
+        max_digits=10,
+        validators=[
+            MinValueValidator(0)
+        ]
+    )
     repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='costs')
 
     def __str__(self):
