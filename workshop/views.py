@@ -12,7 +12,7 @@ from workshop.models import Customer, RepairItem, Costs
 from workshop.forms import (
     SearchForm,
     RepairItemPriorityForm,
-    RepairItemStatusForm,
+    RepairItemStatusForm, SearchRepairItemForm,
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item
 
@@ -100,7 +100,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
         search_query = self.request.GET.get("search_query")
         if search_query:
             queryset = queryset.filter(
-                name__icontains=search_query
+                serial_number__icontains=search_query
             )
 
         status = self.request.GET.get("status")
@@ -115,7 +115,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["q"] = SearchForm(self.request.GET)
+        context["q"] = SearchRepairItemForm(self.request.GET)
         context["status_form"] = RepairItemStatusForm()
         context["priority_form"] = RepairItemPriorityForm()
         return context
@@ -135,7 +135,7 @@ class RepairItemCreateView(LoginRequiredMixin, CreateView):
         "customer"
     ]
     template_name = "workshop/repair_item_create.html"
-    
+
     def get_success_url(self):
         messages.success(self.request, "Urządzenie zostało dodane")
         return reverse_lazy("workshop:repair-item-detail", kwargs={"pk": self.object.pk})

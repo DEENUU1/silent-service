@@ -6,20 +6,76 @@
 
 {% block content %}
 
-{{object.name}} <br>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3">Klient: {{ object.name }}</h1>
+        <div>
+            <a href="{% url 'workshop:customer-update' object.id %}" class="btn btn-primary">Edytuj</a>
+            <form action="{% url 'workshop:customer-delete' object.id %}" method="POST" class="d-inline-block">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Usuń</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informacje o kliencie</h5>
+                        <p class="card-text"><strong>Imię i nazwisko:</strong> {{ object.name }}</p>
+                        <p class="card-text"><strong>Email:</strong> <a href="mailto:{{object.email}}">{{object.email }}</a></p>
+                        <p class="card-text"><strong>Telefon:</strong> {{ object.phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-{{object.email}} <br>
-
-{{object.phone}} <br>
-
-{% for item in repair_items %}
-    {{item.serial_number}} <br>
-    {{item.password}} <br>
-    {{item.visual_status}} <br>
-    {{item.todo}} <br>
-    {{item.done}} <br>
-    {{item.status}} <br>
-    {{item.priority}} <br>
-{% endfor %}
-
-{% endblock %}
+        <div class="row mb-4">
+            <table class="table table-hover mt-5">
+    <thead>
+        <tr>
+            <th scope="col">Numer seryjny</th>
+            <th scope="col">Klient</th>
+            <th scope="col">Status</th>
+            <th scope="col">Priorytet</th>
+            <th scope="col">Edytuj</th>
+            <th scope="col">Usuń</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in repair_items %}
+            <tr>
+                <th scope="row"><a href="{% url 'workshop:repair-item-detail' object.id %}">{{object.serial_number}}</a></th>
+                <th><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{object.customer.name}}</a></th>
+                <th>
+                    {% if object.status %}
+                        <span>Do zrobienia</span>
+                    {% else %}
+                        <span>Zrobione</span>
+                    {% endif %}
+                </th>
+                <th>
+                    {% if object.priority == "low" %}
+                        <span class="text-success">Niski</span>
+                    {% elif object.priority == "mid" %}
+                        <span class="text-warnng">Średni</span>
+                    {% elif object.priority == "high" %}
+                        <span class="text-danger">Wysoki</span>
+                    {% endif %}
+                </th>
+                <th><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></th>
+                <th>
+                    <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Usuń</button>
+                    </form>
+                </th>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+        </div>
+    </div>
+    {% endblock %}
+</div>
