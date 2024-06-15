@@ -150,7 +150,8 @@ class DeviceCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, "Przedmiot został dodany")
-        return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
+        # return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("warehouse:device-list")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -169,7 +170,8 @@ class DeviceUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, "Przedmiot został zaktualizowany")
-        return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
+        # return reverse_lazy("warehouse:device-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy("warehouse:device-list")
 
     def get_queryset(self):
         queryset = super().get_queryset()

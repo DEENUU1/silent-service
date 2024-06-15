@@ -78,8 +78,11 @@
                             {% for cost in costs %}
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <p class="mb-1"><strong>Typ kosztu:</strong> {{ cost.cost_type }}</p>
-                                    <p class="mb-1"><strong>Kwota:</strong> {{ cost.amount }}</p>
+                                    {% if cost.cost_type == "cost" %}
+                                        <p class="mb-1"><strong>Kwota:</strong> - {{ cost.amount }}</p>
+                                    {% else %}
+                                        <p class="mb-1"><strong>Kwota:</strong> + {{ cost.amount }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <a href="{% url 'workshop:costs-update' cost.id %}" class="btn btn-sm btn-primary">Edytuj</a>

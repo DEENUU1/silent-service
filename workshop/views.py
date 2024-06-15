@@ -15,6 +15,7 @@ from workshop.forms import (
     RepairItemStatusForm, SearchRepairItemForm,
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item
+from workshop.services.repair_item_stats import get_repair_item_statistics
 
 
 class CustomerListView(LoginRequiredMixin, ListView):
@@ -118,6 +119,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
         context["q"] = SearchRepairItemForm(self.request.GET)
         context["status_form"] = RepairItemStatusForm()
         context["priority_form"] = RepairItemPriorityForm()
+        context["stats"] = get_repair_item_statistics()
         return context
 
 

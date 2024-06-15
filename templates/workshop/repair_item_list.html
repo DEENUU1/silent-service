@@ -24,47 +24,91 @@
     <button class="btn btn-primary form-control" type="submit">Szukaj</button>
 </form>
 
+<div class="container mt-5">
+    <div class="row mb-2">
+        <div class="col-md-4">
+            <div class="stat-card border p-2">
+                <p>Do zrobienia</p>
+                <h1>{{stats.num_todo}}</h1>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card border p-2">
+                <p>Zrobione</p>
+                <h1>{{stats.num_done}}</h1>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card border p-2">
+                <p>Wszystkie zlecenia</p>
+                <h1>{{stats.num_total}}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="stat-card border rounded p-2" style="background-color: rgba(86,255,0,0.73);">
+                <p>Priorytet niski</p>
+                <h1>{{stats.priority_low}}</h1>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card border rounded p-2" style="background-color: rgba(255,145,0,0.73);">
+                <p>Priorytet średni</p>
+                <h1>{{stats.priority_mid}}</h1>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card border rounded p-2" style="background-color: rgba(255, 0, 0, 0.3);">
+                <p>Priorytet wysoki</p>
+                <h1>{{stats.priority_high}}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <table class="table table-hover mt-5">
     <thead>
-        <tr>
-            <th scope="col">Numer seryjny</th>
-            <th scope="col">Klient</th>
-            <th scope="col">Status</th>
-            <th scope="col">Priorytet</th>
-            <th scope="col">Edytuj</th>
-            <th scope="col">Usuń</th>
-        </tr>
+    <tr>
+        <th scope="col">Numer seryjny</th>
+        <th scope="col">Klient</th>
+        <th scope="col">Status</th>
+        <th scope="col">Priorytet</th>
+        <th scope="col">Edytuj</th>
+        <th scope="col">Usuń</th>
+    </tr>
     </thead>
     <tbody>
-        {% for object in object_list %}
-            <tr>
-                <th scope="row"><a href="{% url 'workshop:repair-item-detail' object.id %}">{{object.serial_number}}</a></th>
-                <th><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{object.customer.name}}</a></th>
-                <th>
-                    {% if object.status %}
-                        <span>Do zrobienia</span>
-                    {% else %}
-                        <span>Zrobione</span>
-                    {% endif %}
-                </th>
-                <th>
-                    {% if object.priority == "low" %}
-                        <span class="text-success">Niski</span>
-                    {% elif object.priority == "mid" %}
-                        <span class="text-warnng">Średni</span>
-                    {% elif object.priority == "high" %}
-                        <span class="text-danger">Wysoki</span>
-                    {% endif %}
-                </th>
-                <th><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></th>
-                <th>
-                    <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-danger" type="submit">Usuń</button>
-                    </form>
-                </th>
-            </tr>
-        {% endfor %}
+    {% for object in object_list %}
+    <tr>
+        <th scope="row"><a href="{% url 'workshop:repair-item-detail' object.id %}">{{object.serial_number}}</a></th>
+        <th><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{object.customer.name}}</a></th>
+        <th>
+            {% if object.status %}
+            <span>Do zrobienia</span>
+            {% else %}
+            <span>Zrobione</span>
+            {% endif %}
+        </th>
+        <th>
+            {% if object.priority == "low" %}
+            <span class="text-success">Niski</span>
+            {% elif object.priority == "mid" %}
+            <span class="text-warnng">Średni</span>
+            {% elif object.priority == "high" %}
+            <span class="text-danger">Wysoki</span>
+            {% endif %}
+        </th>
+        <th><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></th>
+        <th>
+            <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Usuń</button>
+            </form>
+        </th>
+    </tr>
+    {% endfor %}
     </tbody>
 </table>
 
