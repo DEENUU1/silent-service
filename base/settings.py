@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "warehouse",
     "users",
     "workshop",
+    "estimate",
 
     # third party
     "crispy_forms",
