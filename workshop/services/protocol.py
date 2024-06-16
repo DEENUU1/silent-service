@@ -27,6 +27,62 @@ def generate_filename(repair_item: RepairItem) -> str:
     return f"przyjecie_{repair_item.id}_{repair_item.created_at}.pdf"
 
 
+def generate_acceptance_protocol(repair_item: RepairItem):
+    style = get_paragraph_style()
+    header_style = ParagraphStyle('header')
+
+    buffer = io.BytesIO()
+    pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    header_text = "PROTOKÓŁ PRZYJĘCIA SPRZĘTU DO SERWISU"
+    services_description = f"Usługi serwisowe (naprawa, konfiguracja, diagnoza/sprawdzenie, czyszczenie). Dokładny opis wykonanych rzeczy:"
+    signature = "Podpis Zleceniodawcy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data i podpis osoby odbierającej sprzęt: "
+
+    data = [
+        ["Logo", "Adres: Złota 4, Warszawa, Telefon Serwisu: 123-123-123"],
+        ["Imię i nazwisko zleceniodawcy", f"{repair_item.customer.name}"],
+        ["Data przyjęcia", f"{str(repair_item.created_at)[:11]}"],
+        ["Telefon kontaktowy:", f"{repair_item.customer.phone}"],
+        ["Adres email:", f"{repair_item.customer.email}"],
+        ["Nazwa sprzętu:", ""],
+        ["Numery seryjne:", f"{repair_item.serial_number}"],
+        ["Hasło zabezpieczające:", f"{repair_item.password}"],
+    ]
+
+    table = Table(data)
+    table_style = [
+        ('FONT', (0, 0), (-1, -1), 'Verdana', 10),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black)
+    ]
+
+    table.setStyle(table_style)
+
+    add_text(elements, style, header_text)
+    add_spaces(elements, header_style)
+    elements.append(table)
+    add_spaces(elements, header_style)
+    add_text(elements, style, services_description)
+    add_spaces(elements, header_style)
+    add_text(elements, style, f"{repair_item.done}")
+    add_spaces(elements, header_style)
+    add_text(elements, style, signature)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+
+    filename = generate_filename(repair_item)
+
+    return buffer, filename
+
+
+
+
 def generate_admission_protocol(repair_item: RepairItem):
     style = get_paragraph_style()
     header_style = ParagraphStyle('header')

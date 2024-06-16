@@ -14,6 +14,7 @@ from workshop.views import (
     CostsUpdateView,
     CostsDeleteView,
     AdmissionProtocolView,
+    AcceptanceProtocolView
 )
 
 app_name = "workshop"
@@ -21,6 +22,7 @@ app_name = "workshop"
 
 urlpatterns = [
     path('admission_protocol/<int:pk>/', AdmissionProtocolView.as_view(), name='admission-protocol'),
+    path('acceptance_protocol/<int:pk>/', AcceptanceProtocolView.as_view(), name='acceptance-protocol'),
 
     path('customer/', CustomerListView.as_view(), name="customer-list"),
     path('customer/create/', CustomerCreateView.as_view(), name="customer-create"),
