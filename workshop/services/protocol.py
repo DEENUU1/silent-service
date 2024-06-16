@@ -1,3 +1,5 @@
+import uuid
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph
@@ -5,8 +7,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 import io
 from reportlab.pdfbase.ttfonts import TTFont
-from typing import List, Any
-from workshop.models import RepairItem
+from typing import List, Any, Optional
+from workshop.models import RepairItem, Estimate
 
 
 def add_spaces(elements: List, style) -> None:
@@ -23,8 +25,64 @@ def get_paragraph_style() -> Any:
     return paragraph_style
 
 
-def generate_filename(repair_item: RepairItem) -> str:
-    return f"przyjecie_{repair_item.id}_{repair_item.created_at}.pdf"
+def generate_filename(start: str, repair_item: Optional[RepairItem] = None, estimate: Optional[Estimate] = None) -> str:
+    if repair_item:
+        return f"{start}_{repair_item.id}_{repair_item.created_at}.pdf"
+    if estimate:
+        return f"{start}_{estimate.id}_{estimate.created_at}.pdf"
+    else:
+        return f"{start}_{uuid.uuid4()}.pdf"
+
+
+def generate_estimate(estimate: Estimate):
+    style = get_paragraph_style()
+    header_style = ParagraphStyle('header')
+
+    buffer = io.BytesIO()
+    pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+
+    header_text = f"WYCENA: {estimate.name}"
+
+    data = [
+        ["Logo", "Adres: Złota 4, Warszawa, Telefon Serwisu: 123-123-123"],
+        ["Imię i nazwisko zleceniodawcy", f"{estimate.customer.name}"],
+        ["Data", f"{str(estimate.created_at)[:11]}"],
+        ["Telefon kontaktowy:", f"{estimate.customer.phone}"],
+        ["Adres email:", f"{estimate.customer.email}"],
+        ["", ""],
+        ["Nazwa", "Kwota"]
+    ]
+
+
+    estimate_costs = estimate.costs.all()
+    for cost in estimate_costs:
+        data.append([cost.name, f"{cost.amount} zł"])
+    data.append(["Kwota całkowita", f"{sum(c.amount for c in estimate_costs)}"])
+
+    table = Table(data)
+    table_style = [
+        ('FONT', (0, 0), (-1, -1), 'Verdana', 10),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black)
+    ]
+    table.setStyle(table_style)
+
+    add_text(elements, style, header_text)
+    add_spaces(elements, header_style)
+    elements.append(table)
+    add_spaces(elements, header_style)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+
+    filename = generate_filename(start="wycena", estimate=estimate)
+
+    return buffer, filename
 
 
 def generate_acceptance_protocol(repair_item: RepairItem):
@@ -76,11 +134,9 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
     buffer.seek(0)
 
-    filename = generate_filename(repair_item)
+    filename = generate_filename(start="wydanie", repair_item=repair_item)
 
     return buffer, filename
-
-
 
 
 def generate_admission_protocol(repair_item: RepairItem):
@@ -157,6 +213,6 @@ def generate_admission_protocol(repair_item: RepairItem):
 
     buffer.seek(0)
 
-    filename = generate_filename(repair_item)
+    filename = generate_filename(start="przyjecie", repair_item=repair_item)
 
     return buffer, filename

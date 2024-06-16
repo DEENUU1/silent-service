@@ -22,7 +22,7 @@ from workshop.forms import (
 from workshop.services.costs import calculate_total_costs_by_repair_item, calculate_total_costs_by_estimate
 from workshop.services.repair_item_stats import get_repair_item_statistics
 from django.http import FileResponse
-from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol
+from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol, generate_estimate
 from django.views import View
 
 
@@ -37,6 +37,13 @@ class AcceptanceProtocolView(LoginRequiredMixin, View):
     def get(self, request, pk: int):
         obj = RepairItem.objects.get(pk=pk)
         file, filename = generate_acceptance_protocol(obj)
+        return FileResponse(file, as_attachment=True, filename=filename)
+
+
+class EstimateProtocolView(LoginRequiredMixin, View):
+    def get(self, request, pk: int):
+        obj = Estimate.objects.get(pk=pk)
+        file, filename = generate_estimate(obj)
         return FileResponse(file, as_attachment=True, filename=filename)
 
 
