@@ -13,6 +13,7 @@
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Usuń</button>
             </form>
+            <a href="{% url 'workshop:admission-protocol' object.id %}" class="btn btn-info">Protokół przyjęcia</a>
         </div>
     </div>
     <div>

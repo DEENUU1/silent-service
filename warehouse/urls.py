@@ -5,7 +5,6 @@ from warehouse.views import (
     DeviceDetailView,
     DeviceUpdateView,
     DeviceDeleteView,
-    some_view,
     DeviceTypeUpdateView,
     DeviceTypeDeleteView,
     DeviceTypeDetailView,
@@ -21,7 +20,6 @@ urlpatterns = [
     # path('<int:pk>/', DeviceDetailView.as_view(), name='device-detail'),
     path('<int:pk>/update/', DeviceUpdateView.as_view(), name='device-update'),
     path('<int:pk>/delete/', DeviceDeleteView.as_view(), name='device-delete'),
-    path('some_view/', some_view, name='some_view'),
 
     path('device_type/<int:pk>/', DeviceTypeDetailView.as_view(), name='device-type-detail'),
     path('device_type/<int:pk>/update/', DeviceTypeUpdateView.as_view(), name='device-type-update'),

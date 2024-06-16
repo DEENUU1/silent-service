@@ -13,12 +13,15 @@ from workshop.views import (
     CostsCreateView,
     CostsUpdateView,
     CostsDeleteView,
+    AdmissionProtocolView,
 )
 
 app_name = "workshop"
 
 
 urlpatterns = [
+    path('admission_protocol/<int:pk>/', AdmissionProtocolView.as_view(), name='admission-protocol'),
+
     path('customer/', CustomerListView.as_view(), name="customer-list"),
     path('customer/create/', CustomerCreateView.as_view(), name="customer-create"),
     path('customer/<int:pk>/update/', CustomerUpdateView.as_view(), name="customer-update"),
