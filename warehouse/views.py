@@ -32,7 +32,7 @@ class DeviceListView(LoginRequiredMixin, ListView):
 
         device_type = self.request.GET.get("device_type")
         if device_type:
-            queryset = queryset.filter(device_type__name=device_type)
+            queryset = queryset.filter(device_type=device_type)
 
         return queryset
 
