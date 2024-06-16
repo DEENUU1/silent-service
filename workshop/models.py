@@ -43,11 +43,25 @@ class RepairItem(BaseModel):
         verbose_name_plural = 'Repair Items'
 
 
+class Estimate(BaseModel):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='estimates')
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Estimate'
+        verbose_name_plural = 'Estimates'
+
+
 class Costs(BaseModel):
     COST_TYPE = (
         ("cost", "Cost"),
         ("profit", "Profit"),
     )
+    name = models.CharField(max_length=100, null=True, blank=True)
     cost_type = models.CharField(max_length=100, choices=COST_TYPE)
     amount = models.DecimalField(
         decimal_places=2,
@@ -56,7 +70,8 @@ class Costs(BaseModel):
             MinValueValidator(0)
         ]
     )
-    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='costs')
+    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='costs', null=True, blank=True)
+    estimate = models.ForeignKey(Estimate, on_delete=models.CASCADE, related_name='costs', null=True, blank=True)
 
     def __str__(self):
         return f"{str(self.amount)}-{self.cost_type}"
