@@ -12,13 +12,16 @@ from workshop.models import Customer, RepairItem, Costs
 from workshop.forms import (
     SearchForm,
     RepairItemPriorityForm,
-    RepairItemStatusForm, SearchRepairItemForm,
+    RepairItemStatusForm,
+    SearchRepairItemForm,
+    RepairItemCreateForm
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item
 from workshop.services.repair_item_stats import get_repair_item_statistics
 from django.http import FileResponse
 from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol
 from django.views import View
+
 
 
 class AdmissionProtocolView(LoginRequiredMixin, View):
@@ -142,17 +145,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
 
 class RepairItemCreateView(LoginRequiredMixin, CreateView):
     model = RepairItem
-    fields = [
-        "serial_number",
-        "password",
-        "visual_status",
-        "todo",
-        "additional_info",
-        "done",
-        "status",
-        "priority",
-        "customer"
-    ]
+    form_class = RepairItemCreateForm
     template_name = "workshop/repair_item_create.html"
 
     def get_success_url(self):
@@ -162,6 +155,30 @@ class RepairItemCreateView(LoginRequiredMixin, CreateView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
+
+    def form_valid(self, form):
+        customer = form.cleaned_data.get('customer')
+        if not customer:
+            customer_email = form.cleaned_data.get('customer_email')
+            customer_phone = form.cleaned_data.get('customer_phone')
+            customer_name = form.cleaned_data.get('customer_name')
+
+            existing_customer = Customer.objects.filter(email=customer_email).first()
+
+            if existing_customer:
+                customer = existing_customer
+            else:
+                customer = Customer.objects.create(
+                    email=customer_email,
+                    phone=customer_phone,
+                    name=customer_name
+                )
+
+        repair_item = form.save(commit=False)
+        repair_item.customer = customer
+        repair_item.save()
+
+        return super().form_valid(form)
 
 
 class RepairItemUpdateView(LoginRequiredMixin, UpdateView):
