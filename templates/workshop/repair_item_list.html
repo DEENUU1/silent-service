@@ -1,76 +1,116 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
 
+{% block style %}
+    <style>
+        .stat-card-red {
+            background-color: rgba(255, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
 
-{% block meta_title%} Serwis | Klienci {% endblock %}
+        .stat-card-red:hover {
+            background-color: rgba(255, 0, 0, 0.6);
+        }
+
+        .stat-card-orange {
+            background-color: rgba(255, 89, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .stat-card-orange:hover {
+            background-color: rgba(255, 89, 0, 0.6);
+        }
+
+        .stat-card-green {
+            background-color: rgba(0, 255, 11, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .stat-card-green:hover {
+            background-color: rgba(0, 255, 11, 0.6);
+        }
+
+        .stat-card-white {
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .stat-card-white:hover {
+            background-color: rgba(170, 170, 170, 0.6);
+        }
+    </style>
+
+{% endblock %}
+
+{% block meta_title %} Serwis | Klienci {% endblock %}
 
 {% block content %}
 
-<a href="{% url 'workshop:repair-item-create' %}">Stwórz zlecenie</a>
+    <a href="{% url 'workshop:repair-item-create' %}">Stwórz zlecenie</a>
 
-<form method="GET" action="">
-    {% csrf_token %}
-    <div class="form-row align-items-center">
-        <div class="col">
-            <div>{{ q|crispy }}</div>
+    <form method="GET" action="">
+        {% csrf_token %}
+        <div class="form-row align-items-center">
+            <div class="col">
+                <div>{{ q|crispy }}</div>
+            </div>
+            <div class="col">
+                <div>{{ priority_form|crispy }}</div>
+            </div>
+            <div class="col">
+                <div>{{ status_form|crispy }}</div>
+            </div>
         </div>
-        <div class="col">
-            <div>{{priority_form|crispy}}</div>
+        <button class="btn btn-primary form-control" type="submit">Szukaj</button>
+    </form>
+
+    <div class="container mt-5">
+        <div class="row mb-2">
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-white border p-2">
+                    <p>Do zrobienia</p>
+                    <h1>{{ stats.num_todo }}</h1>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-white border p-2">
+                    <p>Zrobione</p>
+                    <h1>{{ stats.num_done }}</h1>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-white border p-2">
+                    <p>Wszystkie zlecenia</p>
+                    <h1>{{ stats.num_total }}</h1>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <div>{{status_form|crispy}}</div>
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-green border rounded p-2">
+                    <p>Priorytet niski</p>
+                    <h1>{{ stats.priority_low }}</h1>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-orange border rounded p-2">
+                    <p>Priorytet średni</p>
+                    <h1>{{ stats.priority_mid }}</h1>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="stat-card-red border rounded p-2">
+                    <p>Priorytet wysoki</p>
+                    <h1>{{ stats.priority_high }}</h1>
+                </div>
+            </div>
         </div>
     </div>
-    <button class="btn btn-primary form-control" type="submit">Szukaj</button>
-</form>
-
-<div class="container mt-5">
-    <div class="row mb-2">
-        <div class="col-md-4">
-            <div class="stat-card border p-2">
-                <p>Do zrobienia</p>
-                <h1>{{stats.num_todo}}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card border p-2">
-                <p>Zrobione</p>
-                <h1>{{stats.num_done}}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card border p-2">
-                <p>Wszystkie zlecenia</p>
-                <h1>{{stats.num_total}}</h1>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="stat-card border rounded p-2" style="background-color: rgba(86,255,0,0.73);">
-                <p>Priorytet niski</p>
-                <h1>{{stats.priority_low}}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card border rounded p-2" style="background-color: rgba(255,145,0,0.73);">
-                <p>Priorytet średni</p>
-                <h1>{{stats.priority_mid}}</h1>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-card border rounded p-2" style="background-color: rgba(255, 0, 0, 0.3);">
-                <p>Priorytet wysoki</p>
-                <h1>{{stats.priority_high}}</h1>
-            </div>
-        </div>
-    </div>
-</div>
 
 
-<div class="table-responsive mt-5">
-    <table class="table table-hover">
-        <thead>
+    <div class="table-responsive mt-5">
+        <table class="table table-hover">
+            <thead>
             <tr>
                 <th scope="col">Numer seryjny</th>
                 <th scope="col">Klient</th>
@@ -79,41 +119,42 @@
                 <th scope="col">Edytuj</th>
                 <th scope="col">Usuń</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for object in object_list %}
-            <tr>
-                <td><a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.serial_number }}</a></td>
-                <td><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a></td>
-                <td>
-                    {% if object.status %}
-                    <span>Do zrobienia</span>
-                    {% else %}
-                    <span>Zrobione</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if object.priority == "low" %}
-                    <span class="text-success">Niski</span>
-                    {% elif object.priority == "mid" %}
-                    <span class="text-warning">Średni</span>
-                    {% elif object.priority == "high" %}
-                    <span class="text-danger">Wysoki</span>
-                    {% endif %}
-                </td>
-                <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
-                <td>
-                    <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
-                        {% csrf_token %}
-                        <button class="btn btn-danger" type="submit">Usuń</button>
-                    </form>
-                </td>
-            </tr>
+                <tr>
+                    <td><a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.serial_number }}</a></td>
+                    <td><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
+                    </td>
+                    <td>
+                        {% if object.status %}
+                            <span>Do zrobienia</span>
+                        {% else %}
+                            <span>Zrobione</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if object.priority == "low" %}
+                            <span class="text-success">Niski</span>
+                        {% elif object.priority == "mid" %}
+                            <span class="text-warning">Średni</span>
+                        {% elif object.priority == "high" %}
+                            <span class="text-danger">Wysoki</span>
+                        {% endif %}
+                    </td>
+                    <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
+                    <td>
+                        <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 
 
-{% include "base/pagination.html" %}
+    {% include "base/pagination.html" %}
 {% endblock %}
