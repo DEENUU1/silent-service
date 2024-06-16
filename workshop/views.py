@@ -21,14 +21,14 @@ from workshop.services.protocol import generate_admission_protocol, generate_acc
 from django.views import View
 
 
-class AdmissionProtocolView(View):
+class AdmissionProtocolView(LoginRequiredMixin, View):
     def get(self, request, pk: int):
         obj = RepairItem.objects.get(pk=pk)
         file, filename = generate_admission_protocol(obj)
         return FileResponse(file, as_attachment=True, filename=filename)
 
 
-class AcceptanceProtocolView(View):
+class AcceptanceProtocolView(LoginRequiredMixin, View):
     def get(self, request, pk: int):
         obj = RepairItem.objects.get(pk=pk)
         file, filename = generate_acceptance_protocol(obj)
