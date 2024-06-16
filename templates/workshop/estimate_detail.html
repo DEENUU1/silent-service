@@ -20,6 +20,7 @@
                                 {% csrf_token %}
                                 <button class="btn btn-danger" type="submit">Usuń</button>
                             </form>
+                            <a href="{% url 'workshop:estimate-convert' estimate.id %}" class="btn btn-info">Utworz zlecenie</a>
                         </div>
                     </div>
                 </div>

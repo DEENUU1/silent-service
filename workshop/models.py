@@ -47,6 +47,7 @@ class Estimate(BaseModel):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='estimates')
     name = models.CharField(max_length=100)
     converted = models.BooleanField(default=False)
+    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='estimates', null=True, blank=True)
 
     def __str__(self):
         return self.name

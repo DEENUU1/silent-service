@@ -18,7 +18,8 @@ from workshop.views import (
     EstimateUpdateView,
     EstimateDeleteView,
     estimate_detail,
-    EstimateListView
+    EstimateListView,
+    convert_estimate_to_repair_item
 )
 
 app_name = "workshop"
@@ -30,6 +31,7 @@ urlpatterns = [
     path('estimate/<int:pk>/delete/', EstimateDeleteView.as_view(), name='estimate-delete'),
     path('estimate/<int:pk>/update/', EstimateUpdateView.as_view(), name='estimate-update'),
     path('estimate/<int:pk>/', estimate_detail, name='estimate-detail'),
+    path('estimate/<int:pk>/convert/', convert_estimate_to_repair_item, name='estimate-convert'),
 
     path('admission_protocol/<int:pk>/', AdmissionProtocolView.as_view(), name='admission-protocol'),
     path('acceptance_protocol/<int:pk>/', AcceptanceProtocolView.as_view(), name='acceptance-protocol'),

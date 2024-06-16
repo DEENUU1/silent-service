@@ -380,3 +380,28 @@ class EstimateDeleteView(LoginRequiredMixin, DeleteView):
         return queryset
 
 
+def convert_estimate_to_repair_item(request, pk):
+    estimate = get_object_or_404(Estimate, id=pk)
+
+    if estimate.converted:
+        messages.error(request, "Wycena jest już przekonwertowana")
+        return redirect('workshop:repair-item-detail', pk=estimate.repair_item.pk)
+
+    repair_item = RepairItem.objects.create(
+        serial_number=estimate.name,
+        customer=estimate.customer,
+    )
+
+    costs = estimate.costs.all()
+    for cost in costs:
+        Costs.objects.create(
+            name=cost.name,
+            amount=cost.amount,
+            cost_type=cost.cost_type,
+            repair_item=repair_item
+        )
+    estimate.converted = True
+    estimate.repair_item = repair_item
+    estimate.save()
+    messages.success(request, "Zlecenie zostało utworzone")
+    return redirect('workshop:repair-item-detail', pk=repair_item.pk)
