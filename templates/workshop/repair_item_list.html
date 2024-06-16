@@ -68,49 +68,52 @@
 </div>
 
 
-<table class="table table-hover mt-5">
-    <thead>
-    <tr>
-        <th scope="col">Numer seryjny</th>
-        <th scope="col">Klient</th>
-        <th scope="col">Status</th>
-        <th scope="col">Priorytet</th>
-        <th scope="col">Edytuj</th>
-        <th scope="col">Usuń</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for object in object_list %}
-    <tr>
-        <th scope="row"><a href="{% url 'workshop:repair-item-detail' object.id %}">{{object.serial_number}}</a></th>
-        <th><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{object.customer.name}}</a></th>
-        <th>
-            {% if object.status %}
-            <span>Do zrobienia</span>
-            {% else %}
-            <span>Zrobione</span>
-            {% endif %}
-        </th>
-        <th>
-            {% if object.priority == "low" %}
-            <span class="text-success">Niski</span>
-            {% elif object.priority == "mid" %}
-            <span class="text-warnng">Średni</span>
-            {% elif object.priority == "high" %}
-            <span class="text-danger">Wysoki</span>
-            {% endif %}
-        </th>
-        <th><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></th>
-        <th>
-            <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Usuń</button>
-            </form>
-        </th>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="table-responsive mt-5">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Numer seryjny</th>
+                <th scope="col">Klient</th>
+                <th scope="col">Status</th>
+                <th scope="col">Priorytet</th>
+                <th scope="col">Edytuj</th>
+                <th scope="col">Usuń</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td><a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.serial_number }}</a></td>
+                <td><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a></td>
+                <td>
+                    {% if object.status %}
+                    <span>Do zrobienia</span>
+                    {% else %}
+                    <span>Zrobione</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if object.priority == "low" %}
+                    <span class="text-success">Niski</span>
+                    {% elif object.priority == "mid" %}
+                    <span class="text-warning">Średni</span>
+                    {% elif object.priority == "high" %}
+                    <span class="text-danger">Wysoki</span>
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
+                <td>
+                    <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
 {% include "base/pagination.html" %}
 {% endblock %}

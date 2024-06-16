@@ -19,33 +19,36 @@
 </form>
 
 
-<table class="table table-hover mt-5">
-    <thead>
-        <tr>
-            <th scope="col">Imie i nazwisko</th>
-            <th scope="col">Email</th>
-            <th scope="col">Numer telefonu</th>
-            <th scope="col">Edytuj</th>
-            <th scope="col">Usuń</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for object in object_list %}
+<div class="table-responsive mt-5">
+    <table class="table table-hover">
+        <thead>
             <tr>
-                <th scope="row"><a href="{% url 'workshop:customer-detail' object.id %}">{{object.name}}</a></th>
-                <th><a href="mailto:{{object.email}}">{{object.email}}</a></th>
-                <th>{{object.phone}}</th>
-                <th><a href="{% url 'workshop:customer-update' object.id %}">Edytuj</a></th>
-                <th>
+                <th scope="col">Imie i nazwisko</th>
+                <th scope="col">Email</th>
+                <th scope="col">Numer telefonu</th>
+                <th scope="col">Edytuj</th>
+                <th scope="col">Usuń</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td><a href="{% url 'workshop:customer-detail' object.id %}">{{ object.name }}</a></td>
+                <td><a href="mailto:{{ object.email }}">{{ object.email }}</a></td>
+                <td>{{ object.phone }}</td>
+                <td><a href="{% url 'workshop:customer-update' object.id %}">Edytuj</a></td>
+                <td>
                     <form action="{% url 'workshop:customer-delete' object.id %}" method="POST">
                         {% csrf_token %}
                         <button class="btn btn-danger" type="submit">Usuń</button>
                     </form>
-                </th>
+                </td>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
 {% include "base/pagination.html" %}
 {% endblock %}
