@@ -93,7 +93,40 @@
                     </tbody>
                 </table>
             </div>
-
+        </div>
+    
+    <div class="row mb-4">
+            <div class="table-responsive mt-5">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Klient</th>
+                        <th scope="col">Edytuj</th>
+                        <th scope="col">Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in estimates %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'workshop:estimate-detail' object.id %}">{{ object.name }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
+                            </td>
+                            <td><a href="{% url 'workshop:estimate-update' object.id %}">Edytuj</a></td>
+                            <td>
+                                <form action="{% url 'workshop:estimate-delete' object.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="btn btn-danger" type="submit">Usuń</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 {% endblock %}

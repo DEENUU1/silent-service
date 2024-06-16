@@ -8,19 +8,29 @@ from workshop.views import (
     RepairItemListView,
     RepairItemCreateView,
     RepairItemDeleteView,
-    RepairItemDetailView,
+    repair_item_detail,
     RepairItemUpdateView,
-    CostsCreateView,
     CostsUpdateView,
     CostsDeleteView,
     AdmissionProtocolView,
-    AcceptanceProtocolView
+    AcceptanceProtocolView,
+    EstimateCreateView,
+    EstimateUpdateView,
+    EstimateDeleteView,
+    estimate_detail,
+    EstimateListView
 )
 
 app_name = "workshop"
 
 
 urlpatterns = [
+    path('estimate/', EstimateListView.as_view(), name='estimate-list'),
+    path('estimate/create/', EstimateCreateView.as_view(), name='estimate-create'),
+    path('estimate/<int:pk>/delete/', EstimateDeleteView.as_view(), name='estimate-delete'),
+    path('estimate/<int:pk>/update/', EstimateUpdateView.as_view(), name='estimate-update'),
+    path('estimate/<int:pk>/', estimate_detail, name='estimate-detail'),
+
     path('admission_protocol/<int:pk>/', AdmissionProtocolView.as_view(), name='admission-protocol'),
     path('acceptance_protocol/<int:pk>/', AcceptanceProtocolView.as_view(), name='acceptance-protocol'),
 
@@ -33,10 +43,9 @@ urlpatterns = [
     path('', RepairItemListView.as_view(), name="repair-item-list"),
     path('create/', RepairItemCreateView.as_view(), name="repair-item-create"),
     path('<int:pk>/delete/', RepairItemDeleteView.as_view(), name="repair-item-delete"),
-    path('<int:pk>/', RepairItemDetailView.as_view(), name="repair-item-detail"),
+    path('<int:pk>/', repair_item_detail, name="repair-item-detail"),
     path('<int:pk>/update/', RepairItemUpdateView.as_view(), name="repair-item-update"),
 
-    path('costs/create/', CostsCreateView.as_view(), name="costs-create"),
     path('costs/<int:pk>/delete/', CostsDeleteView.as_view(), name="costs-delete"),
     path('costs/<int:pk>/update/', CostsUpdateView.as_view(), name="costs-update"),
 ]

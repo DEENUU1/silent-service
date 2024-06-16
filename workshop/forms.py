@@ -1,5 +1,5 @@
 from django import forms
-from workshop.models import Customer, RepairItem
+from workshop.models import Customer, RepairItem, Estimate, Costs
 
 
 class SearchForm(forms.Form):
@@ -20,6 +20,15 @@ class SearchRepairItemForm(forms.Form):
     )
 
 
+class SearchEstimateForm(forms.Form):
+    search_query = forms.CharField(
+        label="Szukaj",
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={"placeholder": "Znajdź wycenę"}),
+    )
+
+
 class RepairItemStatusForm(forms.Form):
     status = forms.BooleanField(required=False)
 
@@ -36,6 +45,34 @@ class RepairItemPriorityForm(forms.Form):
     )
 
     priority = forms.ChoiceField(choices=PRIORITY, required=False)
+
+
+class EstimateCreateForm(forms.ModelForm):
+    name = forms.CharField(max_length=100, required=True, label="Nazwa")
+    customer = forms.ModelChoiceField(
+        queryset=Customer.objects.all(),
+        required=False,
+        label="Wybierz istniejącego klienta bądź podaj dane poniżej aby utworzyć nowego"
+    )
+    customer_email = forms.EmailField(required=False, label="Email")
+    customer_phone = forms.CharField(max_length=20, required=False, label="Numer telefonu")
+    customer_name = forms.CharField(max_length=100, required=False, label="Imię i nazwisko")
+
+    def clean(self):
+        cleaned_data = super().clean()
+        customer = cleaned_data.get('customer')
+        customer_email = cleaned_data.get('customer_email')
+        customer_phone = cleaned_data.get('customer_phone')
+        customer_name = cleaned_data.get('customer_name')
+
+        if not customer and not (customer_email and customer_phone and customer_name):
+            raise forms.ValidationError("You must select a customer or provide customer details.")
+
+        return cleaned_data
+
+    class Meta:
+        model = Estimate
+        fields = ['customer', 'name']
 
 
 class RepairItemCreateForm(forms.ModelForm):
@@ -89,3 +126,25 @@ class RepairItemCreateForm(forms.ModelForm):
     class Meta:
         model = RepairItem
         fields = ['serial_number', 'password', 'visual_status', 'todo', 'additional_info', 'priority', 'customer']
+
+
+class EstimateCostsForm(forms.ModelForm):
+    class Meta:
+        model = Costs
+        fields = ['name', 'cost_type', 'amount', 'estimate']
+        widgets = {
+            'estimate': forms.HiddenInput()
+        }
+
+
+class RepairItemCostsForm(forms.ModelForm):
+    class Meta:
+        model = Costs
+        fields = ['name', 'cost_type', 'amount', 'repair_item']
+        widgets = {
+            'repair_item': forms.HiddenInput()
+        }
+
+
+class EstimateIdForm(forms.Form):
+    estimate_id = forms.IntegerField(label='Estimate ID')

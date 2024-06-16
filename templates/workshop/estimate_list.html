@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title %} Serwis | Wyceny {% endblock %}
+
+{% block content %}
+
+    <a href="{% url 'workshop:estimate-create' %}">Stwórz wycenę</a>
+
+    <form method="GET" action="">
+        {% csrf_token %}
+        <div class="form-row align-items-center">
+            <div class="col">
+                <div>{{ q|crispy }}</div>
+            </div>
+        </div>
+        <button class="btn btn-primary form-control" type="submit">Szukaj</button>
+    </form>
+
+    <div class="table-responsive mt-5">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Klient</th>
+                <th scope="col">Edytuj</th>
+                <th scope="col">Usuń</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <td><a href="{% url 'workshop:estimate-detail' object.id %}">{{ object.name }}</a></td>
+                    <td>
+                        <a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
+                    </td>
+                    <td><a href="{% url 'workshop:estimate-update' object.id %}">Edytuj</a></td>
+                    <td>
+                        <form action="{% url 'workshop:estimate-delete' object.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit">Usuń</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    {% include "base/pagination.html" %}
+{% endblock %}

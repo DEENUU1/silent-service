@@ -1,5 +1,5 @@
 from django.contrib import admin
-from workshop.models import RepairItem, Costs, Customer
+from workshop.models import RepairItem, Costs, Customer, Estimate
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -20,6 +20,12 @@ class CostsAdmin(admin.ModelAdmin):
     list_filter = ('cost_type',)
 
 
+class EstimateAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'name')
+    list_filter = ('customer',)
+
+
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(RepairItem, RepairItemAdmin)
 admin.site.register(Costs, CostsAdmin)
+admin.site.register(Estimate, EstimateAdmin)

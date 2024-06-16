@@ -1,0 +1,84 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block meta_title %} Serwis | {{ estimate.name }} {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="h3">Wycena: {{ estimate.name }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mt-3">
+                            <a href="{% url 'workshop:repair-item-update' estimate.id %}" class="btn btn-primary">Edytuj</a>
+                            <form action="{% url 'workshop:repair-item-delete' estimate.id %}" method="POST" class="d-inline-block">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" type="submit">Usuń</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Informacje o kliencie</h5>
+                        <p class="card-text"><strong>Imię i nazwisko:</strong>
+                            <a href="{% url 'workshop:customer-detail' estimate.customer.id %}"> {{ estimate.customer.name }}</a></p>
+                        <p class="card-text"><strong>Email:</strong> <a href="mailto:{{ estimate.customer.email }}">{{ estimate.customer.email }}</a></p>
+                        <p class="card-text"><strong>Telefon:</strong> {{ estimate.customer.phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Koszty</h5>
+                        <p class="card-text"><strong>Koszt całkowity:</strong> {{ total_costs.cost }}</p>
+                        <p class="card-text"><strong>Zysk:</strong> {{ total_costs.profit }}</p>
+                        <p class="card-text"><strong>Łącznie:</strong> {{ total_costs.total }}</p>
+
+                        <div class="list-group mb-4">
+                            {% for cost in costs %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {% if cost.cost_type == "cost" %}
+                                            <p class="mb-1"><strong>Kwota:</strong> - {{ cost.amount }}</p>
+                                        {% else %}
+                                            <p class="mb-1"><strong>Kwota:</strong> + {{ cost.amount }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'workshop:costs-update' cost.id %}" class="btn btn-sm btn-primary">Edytuj</a>
+                                        <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST" class="d-inline-block">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <h5 class="card-title">Dodaj nowy koszt</h5>
+                        <form method="post" class="mb-4">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit" class="btn btn-success">Dodaj</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
