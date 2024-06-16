@@ -136,7 +136,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
 
         status = self.request.GET.get("status")
         if status == "on":
-            queryset = queryset.filter(status=True)
+            queryset = queryset.filter(status=False)
 
         priority = self.request.GET.get("priority")
         if priority:
@@ -147,8 +147,8 @@ class RepairItemListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["q"] = SearchRepairItemForm(self.request.GET)
-        context["status_form"] = RepairItemStatusForm()
-        context["priority_form"] = RepairItemPriorityForm()
+        context["status_form"] = RepairItemStatusForm(self.request.GET)
+        context["priority_form"] = RepairItemPriorityForm(self.request.GET)
         context["stats"] = get_repair_item_statistics()
         return context
 
