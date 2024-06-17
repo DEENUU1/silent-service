@@ -1,15 +1,14 @@
 import uuid
-
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle, SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 import io
 from reportlab.pdfbase.ttfonts import TTFont
 from typing import List, Any, Optional
 from workshop.models import RepairItem, Estimate
-
+from reportlab.platypus import SimpleDocTemplate, Table, Image, Paragraph
 
 def add_spaces(elements: List, style) -> None:
     elements.append(Paragraph("<br/><br/>", style))
@@ -45,8 +44,16 @@ def generate_estimate(estimate: Estimate):
 
     header_text = f"WYCENA: {estimate.name}"
 
+    logo_path = 'logo.png'
+    logo = Image(logo_path)
+    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 0.5 * inch
+    address_paragraph = Paragraph(
+        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+    )
+
     data = [
-        ["Logo", "Adres: Złota 4, Warszawa, Telefon Serwisu: 123-123-123"],
+        [logo, address_paragraph],
         ["Imię i nazwisko zleceniodawcy", f"{estimate.customer.name}"],
         ["Data", f"{str(estimate.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{estimate.customer.phone}"],
@@ -54,7 +61,6 @@ def generate_estimate(estimate: Estimate):
         ["", ""],
         ["Nazwa", "Kwota"]
     ]
-
 
     estimate_costs = estimate.costs.all()
     for cost in estimate_costs:
@@ -98,8 +104,16 @@ def generate_acceptance_protocol(repair_item: RepairItem):
     services_description = f"Usługi serwisowe (naprawa, konfiguracja, diagnoza/sprawdzenie, czyszczenie). Dokładny opis wykonanych rzeczy:"
     signature = "Podpis Zleceniodawcy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data i podpis osoby odbierającej sprzęt: "
 
+    logo_path = 'logo.png'
+    logo = Image(logo_path)
+    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 0.5 * inch
+    address_paragraph = Paragraph(
+        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+    )
+
     data = [
-        ["Logo", "Adres: Złota 4, Warszawa, Telefon Serwisu: 123-123-123"],
+        [logo, address_paragraph],
         ["Imię i nazwisko zleceniodawcy", f"{repair_item.customer.name}"],
         ["Data przyjęcia", f"{str(repair_item.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{repair_item.customer.phone}"],
@@ -166,8 +180,16 @@ def generate_admission_protocol(repair_item: RepairItem):
                 statute_description_5, statute_description_6, statute_description_7, statute_description_8,
                 statute_description_9]
 
+    logo_path = 'logo.png'
+    logo = Image(logo_path)
+    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 0.5 * inch
+    address_paragraph = Paragraph(
+        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+    )
+
     data = [
-        ["Logo", "Adres: Złota 4, Warszawa, Telefon Serwisu: 123-123-123"],
+        [logo, address_paragraph],
         ["Imię i nazwisko zleceniodawcy", f"{repair_item.customer.name}"],
         ["Data przyjęcia", f"{str(repair_item.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{repair_item.customer.phone}"],
