@@ -39,6 +39,7 @@ class RepairItemStatusForm(forms.Form):
 
 class RepairItemPriorityForm(forms.Form):
     PRIORITY = (
+        ("", "------"),
         ("low", "Niski"),
         ("medium", "Średni"),
         ("high", "Wysoki"),

@@ -58,9 +58,9 @@ class DeviceCreateView(LoginRequiredMixin, CreateView):
         return queryset
 
 
-class DeviceDetailView(LoginRequiredMixin, DetailView):
-    model = Device
-    template_name = "warehouse/device_detail.html"
+# class DeviceDetailView(LoginRequiredMixin, DetailView):
+#     model = Device
+#     template_name = "warehouse/device_detail.html"
 
 
 class DeviceUpdateView(LoginRequiredMixin, UpdateView):

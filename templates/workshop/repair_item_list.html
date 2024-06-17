@@ -116,6 +116,7 @@
                 <th scope="col">Klient</th>
                 <th scope="col">Status</th>
                 <th scope="col">Priorytet</th>
+                <th scope="col">Data dodania</th>
                 <th scope="col">Edytuj</th>
                 <th scope="col">Usuń</th>
             </tr>
@@ -128,9 +129,9 @@
                     </td>
                     <td>
                         {% if object.status %}
-                            <span>Do zrobienia</span>
-                        {% else %}
                             <span>Zrobione</span>
+                        {% else %}
+                            <span>Do zrobienia</span>
                         {% endif %}
                     </td>
                     <td>
@@ -142,6 +143,9 @@
                             <span class="text-danger">Wysoki</span>
                         {% endif %}
                     </td>
+                <td>
+                    <span>{{object.created_at}}</span>
+                </td>
                     <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
                     <td>
                         <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">

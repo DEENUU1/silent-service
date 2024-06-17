@@ -24,6 +24,7 @@
             <tr>
                 <th scope="col">Nazwa</th>
                 <th scope="col">Klient</th>
+                <th scope="col">Data dodania</th>
                 <th scope="col">Edytuj</th>
                 <th scope="col">Usuń</th>
             </tr>
@@ -34,6 +35,9 @@
                     <td><a href="{% url 'workshop:estimate-detail' object.id %}">{{ object.name }}</a></td>
                     <td>
                         <a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
+                    </td>
+                    <td>
+                        <span>{{ object.created_at }}</span>
                     </td>
                     <td><a href="{% url 'workshop:estimate-update' object.id %}">Edytuj</a></td>
                     <td>

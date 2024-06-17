@@ -2,7 +2,7 @@ from django.urls import path
 from warehouse.views import (
     DeviceListView,
     DeviceCreateView,
-    DeviceDetailView,
+    # DeviceDetailView,
     DeviceUpdateView,
     DeviceDeleteView,
     DeviceTypeUpdateView,

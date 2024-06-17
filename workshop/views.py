@@ -24,6 +24,10 @@ from workshop.services.repair_item_stats import get_repair_item_statistics
 from django.http import FileResponse
 from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol, generate_estimate
 from django.views import View
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Case, When
+from django.db import models
 
 
 class AdmissionProtocolView(LoginRequiredMixin, View):
@@ -136,11 +140,38 @@ class RepairItemListView(LoginRequiredMixin, ListView):
 
         status = self.request.GET.get("status")
         if status == "on":
+            queryset = queryset.filter(status=True)
+        if status is None:
             queryset = queryset.filter(status=False)
 
         priority = self.request.GET.get("priority")
         if priority:
             queryset = queryset.filter(priority=priority)
+
+        now = timezone.now()
+
+        three_days_ago = now - timedelta(days=3)
+
+        queryset = queryset.annotate(
+            priority_order=Case(
+                When(priority='high', then=1),
+                When(priority='medium', then=2),
+                When(priority='low', then=3),
+                default=4,
+                output_field=models.IntegerField(),
+            ),
+            recent_created_at=Case(
+                When(created_at__gt=three_days_ago, then=1),
+                default=0,
+                output_field=models.IntegerField(),
+            )
+        )
+
+        queryset = queryset.order_by(
+            'priority_order',
+            '-recent_created_at',
+            '-created_at'
+        )
 
         return queryset
 
