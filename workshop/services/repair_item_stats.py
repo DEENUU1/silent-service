@@ -9,9 +9,9 @@ def get_repair_item_statistics() -> Dict[str, Any]:
     num_done = repair_items.filter(status=True).count()
     num_total = repair_items.count()
 
-    priority_low = repair_items.filter(priority="low").count()
-    priority_mid = repair_items.filter(priority="mid").count()
-    priority_high = repair_items.filter(priority="high").count()
+    priority_low = repair_items.filter(priority="low", status=False).count()
+    priority_mid = repair_items.filter(priority="mid", status=False).count()
+    priority_high = repair_items.filter(priority="high", status=False).count()
 
     return {
         "num_todo": num_todo if num_todo > 0 else 0,
