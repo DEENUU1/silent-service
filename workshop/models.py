@@ -82,3 +82,18 @@ class Costs(BaseModel):
         ordering = ['-created_at']
         verbose_name = 'Cost'
         verbose_name_plural = 'Costs'
+
+
+class Notes(BaseModel):
+    text = models.TextField(null=True, blank=True)
+    file = models.FileField(upload_to='notes/', null=True, blank=True)
+    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+
+    def __str__(self):
+        return self.text[:20]
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Note'
+        verbose_name_plural = 'Notes'
