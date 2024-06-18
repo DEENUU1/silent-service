@@ -149,3 +149,15 @@ class RepairItemCostsForm(forms.ModelForm):
 
 class EstimateIdForm(forms.Form):
     estimate_id = forms.IntegerField(label='Estimate ID')
+
+
+class RepairItemUpdateStatusForm(forms.ModelForm):
+    class Meta:
+        model = RepairItem
+        labels = {
+            'status': '',
+        }
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(choices=[(False, "Do zrobienia"), (True, "Zrobione")])
+        }

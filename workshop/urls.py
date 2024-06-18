@@ -20,7 +20,8 @@ from workshop.views import (
     estimate_detail,
     EstimateListView,
     convert_estimate_to_repair_item,
-    EstimateProtocolView
+    EstimateProtocolView,
+    repair_item_update_status
 )
 
 app_name = "workshop"
@@ -49,6 +50,7 @@ urlpatterns = [
     path('<int:pk>/delete/', RepairItemDeleteView.as_view(), name="repair-item-delete"),
     path('<int:pk>/', repair_item_detail, name="repair-item-detail"),
     path('<int:pk>/update/', RepairItemUpdateView.as_view(), name="repair-item-update"),
+    path('<int:pk>/update_status/',  repair_item_update_status, name="repair-item-update-status"),
 
     path('costs/<int:pk>/delete/', CostsDeleteView.as_view(), name="costs-delete"),
     path('costs/<int:pk>/update/', CostsUpdateView.as_view(), name="costs-update"),

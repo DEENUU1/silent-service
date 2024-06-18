@@ -17,11 +17,14 @@ from workshop.forms import (
     SearchRepairItemForm,
     RepairItemCreateForm,
     EstimateCreateForm,
-    SearchEstimateForm, EstimateCostsForm, RepairItemCostsForm
+    SearchEstimateForm,
+    EstimateCostsForm,
+    RepairItemCostsForm,
+    RepairItemUpdateStatusForm
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item, calculate_total_costs_by_estimate
 from workshop.services.repair_item_stats import get_repair_item_statistics
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol, generate_estimate
 from django.views import View
 from django.utils import timezone
@@ -270,15 +273,29 @@ def repair_item_detail(request, pk: int):
         form = RepairItemCostsForm(initial={'object': repair_item})
 
     costs = repair_item.costs.all()
+    status_form = RepairItemUpdateStatusForm(instance=repair_item)
 
     context = {
         'object': repair_item,
         'costs': costs,
         'total_costs': calculate_total_costs_by_repair_item(costs),
-        'form': form
+        'form': form,
+        'status_form': status_form
     }
 
     return render(request, 'workshop/repair_item_detail.html', context)
+
+
+def repair_item_update_status(request, pk):
+    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        repair_item = get_object_or_404(RepairItem, pk=pk)
+        form = RepairItemUpdateStatusForm(request.POST, instance=repair_item)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'ok', 'new_status': repair_item.status})
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+    return JsonResponse({'status': 'invalid request'}, status=400)
 
 
 class CostsUpdateView(LoginRequiredMixin, UpdateView):

@@ -2,6 +2,56 @@
 {% load crispy_forms_tags %}
 
 {% block meta_title %} Serwis | {{ object.serial_number }} {% endblock %}
+{% block style %}
+    <style>
+        .status-zrobione {
+            background-color: rgba(86, 255, 0, 0.73);
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .status-do-zrobienia {
+            background-color: rgba(255, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#id_status').change(function () {
+                var form = $('#repairItemStatusForm');
+                var url = form.attr('action');
+                var csrftoken = $('[name=csrfmiddlewaretoken]').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: form.serialize(),
+                    headers: {'X-CSRFToken': csrftoken},
+                    success: function (response) {
+                        if (response.status === 'ok') {
+                            var newStatus = response.new_status ? 'Zrobione' : 'Do zrobienia';
+                            var newStatusClass = response.new_status ? 'status-zrobione' : 'status-do-zrobienia';
+                            $('#statusDisplay').text(newStatus);
+                            $('#statusDisplay').attr('class', newStatusClass);
+                        } else {
+                            alert('Błąd: ' + JSON.stringify(response.errors));
+                        }
+                    },
+                    error: function (response) {
+                        alert('Wystąpił błąd. Spróbuj ponownie.');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
 
 {% block content %}
     <div class="container mt-4">
@@ -25,6 +75,11 @@
                             przyjęcia</a>
                         <a href="{% url 'workshop:acceptance-protocol' object.id %}" class="btn btn-info">Protokół
                             odebrania</a>
+                        <form id="repairItemStatusForm"
+                              action="{% url 'workshop:repair-item-update-status' object.pk %}" class="d-inline-block" method="post">
+                            {% csrf_token %}
+                            {{ status_form|crispy }}
+                        </form>
                     </div>
                 </div>
             </div>
@@ -34,11 +89,9 @@
                         <div class="d-flex justify-content-start gap-2">
                             <div class="mb-2">
                                 {% if object.status %}
-                                    <span style="background-color: rgba(255, 0, 0, 0.3);"
-                                          class="p-2 rounded font-weight-bold">Do zrobienia</span>
+                                    <span id="statusDisplay" class="status-zrobione">Zrobione</span>
                                 {% else %}
-                                    <span style="background-color: rgba(86,255,0,0.73);"
-                                          class="p-2 rounded font-weight-bold">Zrobione</span>
+                                    <span id="statusDisplay" class="status-do-zrobienia">Do zrobienia</span>
                                 {% endif %}
                             </div>
                             <div class="mb-2">
@@ -82,8 +135,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Informacje o kliencie</h5>
-                        <p class="card-text"><strong>Imię i nazwisko:</strong><a 
-                                href="{% url 'workshop:customer-detail' object.customer.id %}"> {{ object.customer.name }}</a></p>
+                        <p class="card-text"><strong>Imię i nazwisko:</strong><a
+                                href="{% url 'workshop:customer-detail' object.customer.id %}"> {{ object.customer.name }}</a>
+                        </p>
                         <p class="card-text"><strong>Email:</strong> <a
                                 href="mailto:{{ object.customer.email }}">{{ object.customer.email }}</a></p>
                         <p class="card-text"><strong>Telefon:</strong> {{ object.customer.phone }}</p>
@@ -92,7 +146,7 @@
             </div>
         </div>
 
-         <div class="row mb-4">
+        <div class="row mb-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -112,8 +166,10 @@
                                         {% endif %}
                                     </div>
                                     <div>
-                                        <a href="{% url 'workshop:costs-update' cost.id %}" class="btn btn-sm btn-primary">Edytuj</a>
-                                        <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST" class="d-inline-block">
+                                        <a href="{% url 'workshop:costs-update' cost.id %}"
+                                           class="btn btn-sm btn-primary">Edytuj</a>
+                                        <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST"
+                                              class="d-inline-block">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
                                         </form>
