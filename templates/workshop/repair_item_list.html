@@ -43,7 +43,33 @@
 {% endblock %}
 
 {% block meta_title %} Serwis | Klienci {% endblock %}
+{% block script %}
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var deleteForm = document.getElementById('deleteForm');
+            var deleteButton = document.getElementById('deleteButton');
+            var confirmDeleteButton = document.getElementById('confirmDelete');
+            var closeModalButtons = document.querySelectorAll('[data-dismiss="modal"]');
+
+            deleteButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                $('#confirmDeleteModal').modal('show');
+            });
+
+            closeModalButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    $('#confirmDeleteModal').modal('hide');
+                });
+            });
+
+            confirmDeleteButton.addEventListener('click', function () {
+                deleteForm.submit();
+            });
+        });
+    </script>
+
+{% endblock %}
 {% block content %}
 
     <a href="{% url 'workshop:repair-item-create' %}">Stwórz zlecenie</a>
@@ -143,14 +169,37 @@
                             <span class="text-danger">Wysoki</span>
                         {% endif %}
                     </td>
-                <td>
-                    <span>{{object.created_at}}</span>
-                </td>
+                    <td>
+                        <span>{{ object.created_at }}</span>
+                    </td>
                     <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
                     <td>
+                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+                             aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmDeleteModalLabel">Potwierdzenie
+                                            usunięcia</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Zamknij">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Czy na pewno chcesz usunąć ten element?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="confirmDelete">Tak</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
                             {% csrf_token %}
-                            <button class="btn btn-danger" type="submit">Usuń</button>
+                            <button id="deleteButton" class="btn btn-danger" type="submit">Usuń</button>
                         </form>
                     </td>
                 </tr>
