@@ -84,14 +84,28 @@ class Costs(BaseModel):
         verbose_name_plural = 'Costs'
 
 
-class Notes(BaseModel):
-    text = models.TextField(null=True, blank=True)
-    file = models.FileField(upload_to='notes/', null=True, blank=True)
-    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+class Files(BaseModel):
+    file = models.FileField(upload_to='files/')
 
     def __str__(self):
-        return self.text[:20]
+        return self.file.name
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'File'
+        verbose_name_plural = 'Files'
+
+
+class Notes(BaseModel):
+    name = models.CharField(max_length=100)
+    text = models.TextField(null=True, blank=True)
+    repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+    archived = models.BooleanField(default=False)
+    files = models.ManyToManyField(Files, related_name='notes', blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ['-created_at']

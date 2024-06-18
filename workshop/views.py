@@ -9,7 +9,7 @@ from django.views.generic import (
 )
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from workshop.models import Customer, RepairItem, Costs, Estimate
+from workshop.models import Customer, RepairItem, Costs, Estimate, Notes
 from workshop.forms import (
     SearchForm,
     RepairItemPriorityForm,
