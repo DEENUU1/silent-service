@@ -33,8 +33,6 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When
 from django.db import models
-from datetime import datetime
-import os
 
 
 class AdmissionProtocolView(LoginRequiredMixin, View):

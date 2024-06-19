@@ -2,7 +2,7 @@ import uuid
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.pdfbase import pdfmetrics
 import io
 from reportlab.pdfbase.ttfonts import TTFont
@@ -43,6 +43,7 @@ def generate_filename(start: str, repair_item: Optional[RepairItem] = None, esti
 
 
 def generate_estimate(estimate: Estimate):
+    # Define your styles
     style = get_paragraph_style()
     header_style = get_header_style()
 
@@ -67,16 +68,20 @@ def generate_estimate(estimate: Estimate):
         ["Data", f"{str(estimate.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{estimate.customer.phone}"],
         ["Adres email:", f"{estimate.customer.email}"],
-        ["", ""],
-        ["Nazwa", "Kwota"]
     ]
+    estimate_data = [["Nazwa", "Kwota"], ]
 
     estimate_costs = estimate.costs.all()
     for cost in estimate_costs:
-        data.append([cost.name, f"{cost.amount} zł"])
-    data.append(["Kwota całkowita", f"{sum(c.amount for c in estimate_costs)}"])
+        estimate_data.append([cost.name, f"{cost.amount} zł"])
+    estimate_data.append(["Kwota całkowita", f"{sum(c.amount for c in estimate_costs)} zł"])
 
-    table = Table(data)
+    # Define column widths for consistency
+    col_widths = [3 * inch, 3 * inch]
+
+    table = Table(data, colWidths=col_widths)
+    estimate_table = Table(estimate_data, colWidths=col_widths)
+
     table_style = [
         ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
@@ -85,11 +90,15 @@ def generate_estimate(estimate: Estimate):
         ('GRID', (0, 0), (-1, -1), 0.5, colors.black)
     ]
     table.setStyle(table_style)
+    estimate_table.setStyle(table_style)
 
-    add_text(elements, header_style, header_text)
-    add_spaces(elements)
+    # Add elements to the PDF
+    elements.append(Paragraph(header_text, header_style))
+    elements.append(Paragraph("<br/><br/>", style))  # add spaces
     elements.append(table)
-    add_spaces(elements)
+    elements.append(Paragraph("<br/><br/>", style))  # add spaces
+    elements.append(estimate_table)
+    elements.append(Paragraph("<br/><br/>", style))  # add spaces
 
     doc.build(elements)
 
@@ -98,7 +107,6 @@ def generate_estimate(estimate: Estimate):
     filename = generate_filename(start="wycena", estimate=estimate)
 
     return buffer, filename
-
 
 def generate_acceptance_protocol(repair_item: RepairItem):
     style = get_paragraph_style()
@@ -149,7 +157,7 @@ def generate_acceptance_protocol(repair_item: RepairItem):
     add_spaces(elements)
     add_text(elements, style, services_description)
     add_spaces(elements)
-    add_text(elements, style, f"{repair_item.done}")
+    add_text(elements, style, f"{repair_item.done if repair_item.done else '...'}")
     add_spaces(elements)
     add_text(elements, style, signature)
 
@@ -225,12 +233,12 @@ def generate_admission_protocol(repair_item: RepairItem):
     add_spaces(elements)
     add_text(elements, style, visual_text)
     add_spaces(elements)
-    add_text(elements, style, f"{repair_item.visual_status}")
+    add_text(elements, style, f"{repair_item.visual_status if repair_item.visual_status else '...'}")
     add_spaces(elements)
 
     add_text(elements, style, services_description)
     add_spaces(elements)
-    add_text(elements, style, repair_item.todo)
+    add_text(elements, style, f"{repair_item.todo if repair_item.todo else '...'}")
     add_spaces(elements)
 
     for statute in statutes:
