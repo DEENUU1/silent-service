@@ -101,7 +101,6 @@ class Notes(BaseModel):
     text = models.TextField(null=True, blank=True)
     repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
-    archived = models.BooleanField(default=False)
     files = models.ManyToManyField(Files, related_name='notes', blank=True)
 
     def __str__(self):

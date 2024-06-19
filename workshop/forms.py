@@ -1,5 +1,7 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, ButtonHolder, Submit
 from django import forms
-from workshop.models import Customer, RepairItem, Estimate, Costs
+from workshop.models import Customer, RepairItem, Estimate, Costs, Notes
 
 
 class SearchForm(forms.Form):
@@ -161,3 +163,23 @@ class RepairItemUpdateStatusForm(forms.ModelForm):
         widgets = {
             'status': forms.Select(choices=[(False, "Do zrobienia"), (True, "Zrobione")])
         }
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.widget.attrs['multiple'] = True
+
+
+class NotesForm(forms.ModelForm):
+    listing_images = MultipleFileField(required=False, label='Files')
+
+    class Meta:
+        model = Notes
+        fields = ['name', 'text']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Submit'))

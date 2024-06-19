@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_GET
 from django.views.generic import (
     ListView,
     DetailView,
@@ -9,7 +10,7 @@ from django.views.generic import (
 )
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from workshop.models import Customer, RepairItem, Costs, Estimate, Notes
+from workshop.models import Customer, RepairItem, Costs, Estimate, Notes, Files
 from workshop.forms import (
     SearchForm,
     RepairItemPriorityForm,
@@ -20,9 +21,10 @@ from workshop.forms import (
     SearchEstimateForm,
     EstimateCostsForm,
     RepairItemCostsForm,
-    RepairItemUpdateStatusForm
+    RepairItemUpdateStatusForm, NotesForm
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item, calculate_total_costs_by_estimate
+from workshop.services.filename_generator import generate_filename_timestamp
 from workshop.services.repair_item_stats import get_repair_item_statistics
 from django.http import FileResponse, JsonResponse
 from workshop.services.protocol import generate_admission_protocol, generate_acceptance_protocol, generate_estimate
@@ -31,6 +33,8 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When
 from django.db import models
+from datetime import datetime
+import os
 
 
 class AdmissionProtocolView(LoginRequiredMixin, View):
@@ -123,6 +127,7 @@ class CustomerDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["repair_items"] = RepairItem.objects.filter(customer=self.object)
         context["estimates"] = Estimate.objects.filter(customer=self.object)
+        context["notes"] = Notes.objects.filter(customer=self.object)
         return context
 
 
@@ -274,16 +279,33 @@ def repair_item_detail(request, pk: int):
 
     costs = repair_item.costs.all()
     status_form = RepairItemUpdateStatusForm(instance=repair_item)
+    notes = Notes.objects.filter(repair_item=repair_item)
 
     context = {
         'object': repair_item,
         'costs': costs,
         'total_costs': calculate_total_costs_by_repair_item(costs),
         'form': form,
-        'status_form': status_form
+        'status_form': status_form,
+        'notes': notes,
     }
 
     return render(request, 'workshop/repair_item_detail.html', context)
+
+
+@require_GET
+def autocomplete_costs(request):
+    term = request.GET.get('term', '')
+    costs = Costs.objects.filter(name__icontains=term)[:10]
+    results = []
+    for cost in costs:
+        results.append({
+            'id': cost.id,
+            'name': cost.name,
+            'amount': str(cost.amount),
+            'cost_type': cost.cost_type,
+        })
+    return JsonResponse(results, safe=False)
 
 
 def repair_item_update_status(request, pk):
@@ -460,3 +482,134 @@ def convert_estimate_to_repair_item(request, pk):
     estimate.save()
     messages.success(request, "Zlecenie zostało utworzone")
     return redirect('workshop:repair-item-detail', pk=repair_item.pk)
+
+
+class CreateNotesPerRepairItemView(View):
+    def get(self, request, pk: int):
+        repairitem = get_object_or_404(RepairItem, id=pk)
+        form = NotesForm()
+        context = {
+            'form': form,
+            'repairitem': repairitem,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+    def post(self, request, pk: int):
+        repairitem = get_object_or_404(RepairItem, id=pk)
+        form = NotesForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            text = form.cleaned_data['text']
+
+            note = Notes.objects.create(
+                name=name,
+                text=text,
+                repair_item=repairitem,
+                customer=repairitem.customer
+            )
+
+            files = request.FILES.getlist('listing_images')
+            for file in files:
+                file_instance = Files.objects.create(file=generate_filename_timestamp(file))
+                note.files.add(file_instance)
+
+            return redirect('workshop:repair-item-detail',  pk=repairitem.pk)
+
+        context = {
+            'form': form,
+            'repairitem': repairitem,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+
+class CreateNotesPerCustomerItemView(View):
+    def get(self, request, pk: int):
+        customer = get_object_or_404(Customer, id=pk)
+        form = NotesForm()
+        context = {
+            'form': form,
+            'customer': customer,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+    def post(self, request, pk: int):
+        customer = get_object_or_404(Customer, id=pk)
+        form = NotesForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            text = form.cleaned_data['text']
+
+            note = Notes.objects.create(
+                name=name,
+                text=text,
+                customer=customer
+            )
+
+            files = request.FILES.getlist('listing_images')
+            for file in files:
+                file_instance = Files.objects.create(file=generate_filename_timestamp(file))
+                note.files.add(file_instance)
+
+            return redirect('workshop:estimate-list')
+
+        context = {
+            'form': form,
+            'customer': customer,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+
+class NotesUpdateView(LoginRequiredMixin, UpdateView):
+    model = Notes
+    fields = ["name", "text"]
+    template_name = "workshop/notes_update.html"
+
+    def get_success_url(self):
+        messages.success(self.request, "Notatka została zaaktualizowana")
+        return reverse_lazy("workshop:notes-detail", kwargs={"pk": self.object.pk})
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+
+class NotesDetailView(LoginRequiredMixin, DetailView):
+    model = Notes
+    template_name = "workshop/notes_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["files"] = self.object.files.all()
+        return context
+
+
+class NotesDeleteView(LoginRequiredMixin, DeleteView):
+    model = Notes
+    success_url = reverse_lazy("workshop:repair-item-list")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Notatka została usunięta")
+        return queryset
+
+
+class FileCreateByNotesView(View):
+    def post(self, request, pk: int):
+        note = get_object_or_404(Notes, id=pk)
+        files = request.FILES.getlist('listing_images')
+        for file in files:
+            file_instance = Files.objects.create(file=generate_filename_timestamp(file))
+            note.files.add(file_instance)
+        return redirect('workshop:notes-detail', pk=note.pk)
+
+
+class FileDeleteView(LoginRequiredMixin, DeleteView):
+    model = Files
+    success_url = reverse_lazy("workshop:customer-list")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        messages.success(self.request, "Plik został usunięty")
+        return queryset

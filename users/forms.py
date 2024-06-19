@@ -9,7 +9,6 @@ class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={"class": "form-control"})
     )
-    accept_statute = forms.BooleanField()
 
     class Meta:
         model = User

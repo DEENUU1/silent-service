@@ -1,21 +1,30 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
 
-
 {% block meta_title %} Serwis | {{ object.name }} {% endblock %}
+
 {% block content %}
     {% block script %}
-
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                var deleteForm = document.getElementById('deleteForm');
-                var deleteButton = document.getElementById('deleteButton');
+                // Query all delete buttons
+                var deleteButtons = document.querySelectorAll('button[id^="deleteButton"]');
                 var confirmDeleteButton = document.getElementById('confirmDelete');
                 var closeModalButtons = document.querySelectorAll('[data-dismiss="modal"]');
+                var targetForm = null;
 
-                deleteButton.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    $('#confirmDeleteModal').modal('show');
+                deleteButtons.forEach(function (button) {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        targetForm = document.getElementById(button.dataset.formId);
+                        $('#confirmDeleteModal').modal('show');
+                    });
+                });
+
+                confirmDeleteButton.addEventListener('click', function () {
+                    if (targetForm) {
+                        targetForm.submit();
+                    }
                 });
 
                 closeModalButtons.forEach(function (button) {
@@ -23,77 +32,102 @@
                         $('#confirmDeleteModal').modal('hide');
                     });
                 });
-
-                confirmDeleteButton.addEventListener('click', function () {
-                    deleteForm.submit();
-                });
             });
         </script>
-
     {% endblock %}
-    <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="">
-            <div class="row">
-                <div class="col">
-                    <h1 class="h3">Klient: {{ object.name }}</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="mt-3">
-                        <a href="{% url 'workshop:customer-update' object.id %}" class="btn btn-primary">Edytuj</a>
 
-                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
-                             aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmDeleteModalLabel">Potwierdzenie
-                                            usunięcia</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Zamknij">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Czy na pewno chcesz usunąć ten element?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie
-                                        </button>
-                                        <button type="button" class="btn btn-danger" id="confirmDelete">Tak</button>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="h3">Klient: {{ object.name }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mt-3">
+                            <a href="{% url 'workshop:note-customer-create' object.id %}" class="btn btn-info">Dodaj
+                                notatkę</a>
+                            <a href="{% url 'workshop:customer-update' object.id %}" class="btn btn-primary">Edytuj</a>
+
+                            <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel">Potwierdzenie
+                                                usunięcia</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Zamknij">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Czy na pewno chcesz usunąć ten element?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie
+                                            </button>
+                                            <button type="button" class="btn btn-danger" id="confirmDelete">Tak</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <form id="deleteForm-customer" action="{% url 'workshop:customer-delete' object.id %}"
+                                  method="POST" class="d-inline-block">
+                                {% csrf_token %}
+                                <button id="deleteButton-customer" data-form-id="deleteForm-customer"
+                                        class="btn btn-danger" type="submit">Usuń
+                                </button>
+                            </form>
                         </div>
-
-                        <form id="deleteForm" action="{% url 'workshop:customer-delete' object.id %}" method="POST"
-                              class="d-inline-block">
-                            {% csrf_token %}
-                            <button id="deleteButton" class="btn btn-danger" type="submit">Usuń</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="row mb-4">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Informacje o kliencie</h5>
-                        <p class="card-text"><strong>Imię i nazwisko:</strong> {{ object.name }}</p>
-                        <p class="card-text"><strong>Email:</strong> <a
-                                href="mailto:{{ object.email }}">{{ object.email }}</a></p>
-                        <p class="card-text"><strong>Telefon:</strong> {{ object.phone }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Notes Section -->
         <div class="row mb-4">
             <div class="table-responsive mt-5">
+                <h3>Notatki</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Tytuł</th>
+                        <th scope="col">Data utworzenia</th>
+                        <th scope="col">Edytuj</th>
+                        <th scope="col">Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for note in notes %}
+                        <tr>
+                            <td><a href="{% url 'workshop:notes-detail' note.id %}">{{ note.name }}</a></td>
+                            <td><span>{{ note.created_at }}</span></td>
+                            <td><a href="{% url 'workshop:notes-update' note.id %}">Edytuj</a></td>
+                            <td>
+                                <form id="deleteForm-note-{{ note.id }}"
+                                      action="{% url 'workshop:notes-delete' note.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button id="deleteButton-note-{{ note.id }}"
+                                            data-form-id="deleteForm-note-{{ note.id }}" class="btn btn-danger"
+                                            type="button">Usuń
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Repair Items Section -->
+        <div class="row mb-4">
+            <div class="table-responsive mt-5">
+                <h3>Zlecenia</h3>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -106,35 +140,38 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for object in repair_items %}
+                    {% for item in repair_items %}
                         <tr>
-                            <td>
-                                <a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.serial_number }}</a>
+                            <td><a href="{% url 'workshop:repair-item-detail' item.id %}">{{ item.serial_number }}</a>
                             </td>
                             <td>
-                                <a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
+                                <a href="{% url 'workshop:customer-detail' item.customer.id %}">{{ item.customer.name }}</a>
                             </td>
                             <td>
-                                {% if object.status %}
+                                {% if item.status %}
                                     <span>Zrobione</span>
                                 {% else %}
                                     <span>Do zrobienia</span>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if object.priority == "low" %}
+                                {% if item.priority == "low" %}
                                     <span class="text-success">Niski</span>
-                                {% elif object.priority == "medium" %}
+                                {% elif item.priority == "medium" %}
                                     <span class="text-warning">Średni</span>
-                                {% elif object.priority == "high" %}
+                                {% elif item.priority == "high" %}
                                     <span class="text-danger">Wysoki</span>
                                 {% endif %}
                             </td>
-                            <td><a href="{% url 'workshop:repair-item-update' object.id %}">Edytuj</a></td>
+                            <td><a href="{% url 'workshop:repair-item-update' item.id %}">Edytuj</a></td>
                             <td>
-                                <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST">
+                                <form id="deleteForm-item-{{ item.id }}"
+                                      action="{% url 'workshop:repair-item-delete' item.id %}" method="POST">
                                     {% csrf_token %}
-                                    <button id="confirmDelete" class="btn btn-danger" type="submit">Usuń</button>
+                                    <button id="deleteButton-item-{{ item.id }}"
+                                            data-form-id="deleteForm-item-{{ item.id }}" class="btn btn-danger"
+                                            type="button">Usuń
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -144,8 +181,10 @@
             </div>
         </div>
 
+        <!-- Estimates Section -->
         <div class="row mb-4">
             <div class="table-responsive mt-5">
+                <h3>Wyceny</h3>
                 <table class="table table-hover">
                     <thead>
                     <tr>
@@ -156,19 +195,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for object in estimates %}
+                    {% for estimate in estimates %}
                         <tr>
+                            <td><a href="{% url 'workshop:estimate-detail' estimate.id %}">{{ estimate.name }}</a></td>
                             <td>
-                                <a href="{% url 'workshop:estimate-detail' object.id %}">{{ object.name }}</a>
+                                <a href="{% url 'workshop:customer-detail' estimate.customer.id %}">{{ estimate.customer.name }}</a>
                             </td>
+                            <td><a href="{% url 'workshop:estimate-update' estimate.id %}">Edytuj</a></td>
                             <td>
-                                <a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
-                            </td>
-                            <td><a href="{% url 'workshop:estimate-update' object.id %}">Edytuj</a></td>
-                            <td>
-                                <form action="{% url 'workshop:estimate-delete' object.id %}" method="POST">
+                                <form id="deleteForm-estimate-{{ estimate.id }}"
+                                      action="{% url 'workshop:estimate-delete' estimate.id %}" method="POST">
                                     {% csrf_token %}
-                                    <button class="btn btn-danger" type="submit">Usuń</button>
+                                    <button id="deleteButton-estimate-{{ estimate.id }}"
+                                            data-form-id="deleteForm-estimate-{{ estimate.id }}" class="btn btn-danger"
+                                            type="button">Usuń
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -179,4 +220,3 @@
         </div>
     </div>
 {% endblock %}
-</div>

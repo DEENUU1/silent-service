@@ -2,7 +2,80 @@
 {% load crispy_forms_tags %}
 
 {% block meta_title %} Serwis | {{ estimate.name }} {% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            $('#id_name').on('input', function () {
+                var query = $(this).val();
+                if (query.length > 2) {
+                    $.ajax({
+                        url: "{% url 'workshop:autocomplete-costs' %}",
+                        data: {
+                            'term': query
+                        },
+                        success: function (data) {
+                            $('#costs-suggestions').empty();
+                            if (data.length > 0) {
+                                $.each(data, function (index, cost) {
+                                    $('#costs-suggestions').append(
+                                        '<li class="list-group-item" data-id="' + cost.id + '" data-name="' + cost.name + '" data-amount="' + cost.amount + '" data-cost_type="' + cost.cost_type + '">' + cost.name + ' - ' + cost.amount + '</li>'
+                                    );
+                                });
+                            } else {
+                                $('#costs-suggestions').append(
+                                    '<li class="list-group-item">No results found</li>'
+                                );
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('AJAX Error: ', status, error);
+                        }
+                    });
+                } else {
+                    $('#costs-suggestions').empty();
+                }
+            });
+
+            // Dodajemy obsługę kliknięcia na podpowiedź
+            $('#costs-suggestions').on('click', 'li', function () {
+                var name = $(this).data('name');
+                var amount = $(this).data('amount');
+                var cost_type = $(this).data('cost_type');
+
+                $('#id_name').val(name);
+                $('#id_amount').val(amount);
+                $('#id_cost_type').val(cost_type);
+                $('#costs-suggestions').empty();
+            });
+
+            // Obsługa nawigacji klawiaturą
+            $('#id_name').on('keydown', function (e) {
+                var suggestionItems = $('#costs-suggestions li');
+                if (suggestionItems.length > 0) {
+                    if (e.key === 'ArrowDown') {
+                        selectedSuggestionIndex = (selectedSuggestionIndex + 1) % suggestionItems.length;
+                        highlightSuggestion(suggestionItems, selectedSuggestionIndex);
+                    } else if (e.key === 'ArrowUp') {
+                        selectedSuggestionIndex = (selectedSuggestionIndex - 1 + suggestionItems.length) % suggestionItems.length;
+                        highlightSuggestion(suggestionItems, selectedSuggestionIndex);
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < suggestionItems.length) {
+                            $(suggestionItems[selectedSuggestionIndex]).click();
+                        }
+                    }
+                }
+            });
+
+            function highlightSuggestion(items, index) {
+                items.removeClass('active');
+                $(items[index]).addClass('active');
+            }
+        });
+    </script>
+{% endblock %}
 {% block content %}
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -15,13 +88,17 @@
                 <div class="row">
                     <div class="col">
                         <div class="mt-3">
-                            <a href="{% url 'workshop:repair-item-update' estimate.id %}" class="btn btn-primary">Edytuj</a>
-                            <form action="{% url 'workshop:repair-item-delete' estimate.id %}" method="POST" class="d-inline-block">
+                            <a href="{% url 'workshop:repair-item-update' estimate.id %}"
+                               class="btn btn-primary">Edytuj</a>
+                            <form action="{% url 'workshop:repair-item-delete' estimate.id %}" method="POST"
+                                  class="d-inline-block">
                                 {% csrf_token %}
                                 <button class="btn btn-danger" type="submit">Usuń</button>
                             </form>
-                            <a href="{% url 'workshop:estimate-convert' estimate.id %}" class="btn btn-info">Utworz zlecenie</a>
-                            <a href="{% url 'workshop:estimate-protocol' estimate.id %}" class="btn btn-info">Protokół</a>
+                            <a href="{% url 'workshop:estimate-convert' estimate.id %}" class="btn btn-info">Utworz
+                                zlecenie</a>
+                            <a href="{% url 'workshop:estimate-protocol' estimate.id %}"
+                               class="btn btn-info">Protokół</a>
                         </div>
                     </div>
                 </div>
@@ -34,8 +111,10 @@
                     <div class="card-body">
                         <h5 class="card-title">Informacje o kliencie</h5>
                         <p class="card-text"><strong>Imię i nazwisko:</strong>
-                            <a href="{% url 'workshop:customer-detail' estimate.customer.id %}"> {{ estimate.customer.name }}</a></p>
-                        <p class="card-text"><strong>Email:</strong> <a href="mailto:{{ estimate.customer.email }}">{{ estimate.customer.email }}</a></p>
+                            <a href="{% url 'workshop:customer-detail' estimate.customer.id %}"> {{ estimate.customer.name }}</a>
+                        </p>
+                        <p class="card-text"><strong>Email:</strong> <a
+                                href="mailto:{{ estimate.customer.email }}">{{ estimate.customer.email }}</a></p>
                         <p class="card-text"><strong>Telefon:</strong> {{ estimate.customer.phone }}</p>
                     </div>
                 </div>
@@ -62,8 +141,10 @@
                                         {% endif %}
                                     </div>
                                     <div>
-                                        <a href="{% url 'workshop:costs-update' cost.id %}" class="btn btn-sm btn-primary">Edytuj</a>
-                                        <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST" class="d-inline-block">
+                                        <a href="{% url 'workshop:costs-update' cost.id %}"
+                                           class="btn btn-sm btn-primary">Edytuj</a>
+                                        <form action="{% url 'workshop:costs-delete' cost.id %}" method="POST"
+                                              class="d-inline-block">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
                                         </form>
@@ -73,9 +154,31 @@
                         </div>
 
                         <h5 class="card-title">Dodaj nowy koszt</h5>
-                        <form method="post" class="mb-4">
-                            {% csrf_token %}
-                            {{ form|crispy }}
+                        <form autocomplete="off" method="post" class="mb-4">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                            <div id="div_id_name" class="mb-3">
+                                <label for="id_name" class="form-label">Name</label>
+                                <input type="text" name="name" maxlength="100" class="textinput form-control"
+                                       id="id_name">
+                                <ul id="costs-suggestions" class="list-group"></ul> <!-- Dodaj listę dla podpowiedzi -->
+                            </div>
+                            <div id="div_id_cost_type" class="mb-3">
+                                <label for="id_cost_type" class="form-label requiredField">
+                                    Cost type<span class="asteriskField">*</span>
+                                </label>
+                                <select name="cost_type" class="select form-select" required="" id="id_cost_type">
+                                    <option value="" selected="">---------</option>
+                                    <option value="cost">Cost</option>
+                                    <option value="profit">Profit</option>
+                                </select>
+                            </div>
+                            <div id="div_id_amount" class="mb-3">
+                                <label for="id_amount" class="form-label requiredField">Amount<span
+                                        class="asteriskField">*</span></label>
+                                <input type="number" name="amount" step="0.01" class="numberinput form-control"
+                                       required="" id="id_amount">
+                            </div>
+                            <input type="hidden" name="repair_item" id="id_repair_item">
                             <button type="submit" class="btn btn-success">Dodaj</button>
                         </form>
                     </div>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from workshop.models import RepairItem, Costs, Customer, Estimate
+from workshop.models import RepairItem, Costs, Customer, Estimate, Files, Notes
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -25,6 +25,16 @@ class EstimateAdmin(admin.ModelAdmin):
     list_filter = ('customer',)
 
 
+class FilesAdmin(admin.ModelAdmin):
+    list_display = ('file', 'created_at')
+
+
+class NotesAdmin(admin.ModelAdmin):
+    list_display = ('name', 'customer', 'repair_item')
+
+
+admin.site.register(Files, FilesAdmin)
+admin.site.register(Notes, NotesAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(RepairItem, RepairItemAdmin)
 admin.site.register(Costs, CostsAdmin)

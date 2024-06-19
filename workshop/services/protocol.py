@@ -8,10 +8,11 @@ import io
 from reportlab.pdfbase.ttfonts import TTFont
 from typing import List, Any, Optional
 from workshop.models import RepairItem, Estimate
-from reportlab.platypus import SimpleDocTemplate, Table, Image, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, Image, Paragraph, Spacer
 
-def add_spaces(elements: List, style) -> None:
-    elements.append(Paragraph("<br/><br/>", style))
+
+def add_spaces(elements, height=7):
+    elements.append(Spacer(1, height))
 
 
 def add_text(elements: List, style, text: str) -> None:
@@ -21,7 +22,15 @@ def add_text(elements: List, style, text: str) -> None:
 def get_paragraph_style() -> Any:
     paragraph_style = ParagraphStyle('services_description')
     paragraph_style.fontName = 'Verdana'
+    paragraph_style.fontSize = 6
     return paragraph_style
+
+
+def get_header_style() -> Any:
+    header_style = ParagraphStyle('header')
+    header_style.fontName = 'Verdana'
+    header_style.fontSize = 10
+    return header_style
 
 
 def generate_filename(start: str, repair_item: Optional[RepairItem] = None, estimate: Optional[Estimate] = None) -> str:
@@ -35,7 +44,7 @@ def generate_filename(start: str, repair_item: Optional[RepairItem] = None, esti
 
 def generate_estimate(estimate: Estimate):
     style = get_paragraph_style()
-    header_style = ParagraphStyle('header')
+    header_style = get_header_style()
 
     buffer = io.BytesIO()
     pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
@@ -46,10 +55,10 @@ def generate_estimate(estimate: Estimate):
 
     logo_path = 'logo.png'
     logo = Image(logo_path)
-    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
-    logo.drawWidth = 0.5 * inch
+    logo.drawHeight = 2 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 2 * inch
     address_paragraph = Paragraph(
-        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+        "Adres: Tadeusza Kościuszki 29 02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
     )
 
     data = [
@@ -69,7 +78,7 @@ def generate_estimate(estimate: Estimate):
 
     table = Table(data)
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 10),
+        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -77,10 +86,10 @@ def generate_estimate(estimate: Estimate):
     ]
     table.setStyle(table_style)
 
-    add_text(elements, style, header_text)
-    add_spaces(elements, header_style)
+    add_text(elements, header_style, header_text)
+    add_spaces(elements)
     elements.append(table)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
 
     doc.build(elements)
 
@@ -93,7 +102,7 @@ def generate_estimate(estimate: Estimate):
 
 def generate_acceptance_protocol(repair_item: RepairItem):
     style = get_paragraph_style()
-    header_style = ParagraphStyle('header')
+    header_style = get_header_style()
 
     buffer = io.BytesIO()
     pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
@@ -106,10 +115,10 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
     logo_path = 'logo.png'
     logo = Image(logo_path)
-    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
-    logo.drawWidth = 0.5 * inch
+    logo.drawHeight = 2 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 2 * inch
     address_paragraph = Paragraph(
-        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+        "Adres: Tadeusza Kościuszki 29 02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
     )
 
     data = [
@@ -125,7 +134,7 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
     table = Table(data)
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 10),
+        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -134,14 +143,14 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
     table.setStyle(table_style)
 
-    add_text(elements, style, header_text)
-    add_spaces(elements, header_style)
+    add_text(elements, header_style, header_text)
+    add_spaces(elements)
     elements.append(table)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, services_description)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, f"{repair_item.done}")
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, signature)
 
     doc.build(elements)
@@ -155,7 +164,7 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
 def generate_admission_protocol(repair_item: RepairItem):
     style = get_paragraph_style()
-    header_style = ParagraphStyle('header')
+    header_style = get_header_style()
 
     buffer = io.BytesIO()
     pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
@@ -182,10 +191,10 @@ def generate_admission_protocol(repair_item: RepairItem):
 
     logo_path = 'logo.png'
     logo = Image(logo_path)
-    logo.drawHeight = 0.5 * inch * logo.drawHeight / logo.drawWidth
-    logo.drawWidth = 0.5 * inch
+    logo.drawHeight = 2 * inch * logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 2 * inch
     address_paragraph = Paragraph(
-        "Adres: Tadeusza Kościuszki 29<br/>02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
+        "Adres: Tadeusza Kościuszki 29 02-495 Warszawa<br/>Telefon Serwisu: 509-621-580", style
     )
 
     data = [
@@ -201,7 +210,7 @@ def generate_admission_protocol(repair_item: RepairItem):
 
     table = Table(data)
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 10),
+        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -210,25 +219,25 @@ def generate_admission_protocol(repair_item: RepairItem):
 
     table.setStyle(table_style)
 
-    add_text(elements, style, header_text)
-    add_spaces(elements, header_style)
+    add_text(elements, header_style, header_text)
+    add_spaces(elements)
     elements.append(table)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, visual_text)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, f"{repair_item.visual_status}")
-    add_spaces(elements, header_style)
+    add_spaces(elements)
 
     add_text(elements, style, services_description)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, repair_item.todo)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
 
     for statute in statutes:
         add_text(elements, style, statute)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, statute_end)
-    add_spaces(elements, header_style)
+    add_spaces(elements)
     add_text(elements, style, signature)
 
     doc.build(elements)

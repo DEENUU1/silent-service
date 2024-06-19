@@ -9,6 +9,7 @@ from .forms import (
     RegistrationForm,
     LoginForm,
 )
+from django.contrib import messages
 
 load_dotenv()
 
@@ -32,11 +33,11 @@ class LoginUserView(FormView):
     success_url = reverse_lazy("warehouse:device-list")
 
     def form_valid(self, form):
-        """
-        Overrides the parent class method to log the user in upon successful
-        authentication and redirect them to the success URL.
-        """
-        login(self.request, form.get_user())
+        user = form.get_user()
+        if not user.is_active:
+            messages.error(self.request, "Twoje konto jest nieaktywne. Skontaktuj się z administratorem.")
+            return self.form_invalid(form)
+        login(self.request, user)
         return super().form_valid(form)
 
 

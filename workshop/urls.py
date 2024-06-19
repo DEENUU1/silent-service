@@ -21,7 +21,15 @@ from workshop.views import (
     EstimateListView,
     convert_estimate_to_repair_item,
     EstimateProtocolView,
-    repair_item_update_status
+    repair_item_update_status,
+    CreateNotesPerCustomerItemView,
+    CreateNotesPerRepairItemView,
+    NotesUpdateView,
+    NotesDetailView,
+    NotesDeleteView,
+    FileCreateByNotesView,
+    FileDeleteView,
+    autocomplete_costs
 )
 
 app_name = "workshop"
@@ -54,4 +62,15 @@ urlpatterns = [
 
     path('costs/<int:pk>/delete/', CostsDeleteView.as_view(), name="costs-delete"),
     path('costs/<int:pk>/update/', CostsUpdateView.as_view(), name="costs-update"),
+
+    path('note/<int:pk>/', CreateNotesPerRepairItemView.as_view(), name="note-repair-item-create"),
+    path('note/<int:pk>/customer', CreateNotesPerCustomerItemView.as_view(), name="note-customer-create"),
+    path('note/<int:pk>/update', NotesUpdateView.as_view(), name="notes-update"),
+    path('note/<int:pk>/detail', NotesDetailView.as_view(), name="notes-detail"),
+    path('note/<int:pk>/delete', NotesDeleteView.as_view(), name="notes-delete"),
+
+    path('file/<int:pk>/delete', FileDeleteView.as_view(), name="file-delete"),
+    path('file/<int:pk>/create', FileCreateByNotesView.as_view(), name="file-create"),
+
+    path('costs/', autocomplete_costs, name='autocomplete-costs'),
 ]

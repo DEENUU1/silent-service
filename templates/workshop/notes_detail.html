@@ -1,0 +1,144 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block meta_title %} Serwis | {{ object.name }} {% endblock %}
+{% block content %}
+    {% block script %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var deleteForm = document.getElementById('deleteForm');
+                var deleteButton = document.getElementById('deleteButton');
+                var confirmDeleteButton = document.getElementById('confirmDelete');
+                var closeModalButtons = document.querySelectorAll('[data-dismiss="modal"]');
+
+                deleteButton.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    $('#confirmDeleteModal').modal('show');
+                });
+
+                closeModalButtons.forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        $('#confirmDeleteModal').modal('hide');
+                    });
+                });
+
+                confirmDeleteButton.addEventListener('click', function () {
+                    deleteForm.submit();
+                });
+
+                var fileDeleteButtons = document.querySelectorAll('[id^="deleteButton-file"]');
+                fileDeleteButtons.forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        var formId = button.getAttribute('data-form-id');
+                        var form = document.getElementById(formId);
+                        $('#confirmDeleteModal').modal('show');
+
+                        confirmDeleteButton.onclick = function () {
+                            form.submit();
+                        };
+                    });
+                });
+            });
+        </script>
+    {% endblock %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="h3">Notatka: {{ object.name }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mt-3">
+                            <a href="{% url 'workshop:notes-update' object.id %}" class="btn btn-primary">Edytuj</a>
+
+                            <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel">Potwierdzenie
+                                                usunięcia</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Zamknij">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Czy na pewno chcesz usunąć ten element?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie
+                                            </button>
+                                            <button type="button" class="btn btn-danger" id="confirmDelete">Tak</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form id="deleteForm" action="{% url 'workshop:notes-delete' object.id %}" method="POST"
+                                  class="d-inline-block">
+                                {% csrf_token %}
+                                <button id="deleteButton" class="btn btn-danger" type="submit">Usuń</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <p>{{ object.text }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form id="fileUploadForm" action="{% url 'workshop:file-create' object.id %}" method="POST"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="file" name="listing_images" id="listing_images" multiple class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Dodaj pliki</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="table-responsive mt-5">
+                <h3>Pliki</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Plik</th>
+                        <th scope="col">Data utworzenia</th>
+                        <th scope="col">Usuń</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for file in files %}
+                        <tr>
+                            <td><a href="{{ file.file.url }}">{{ file }}</a></td>
+                            <td><span>{{ file.created_at }}</span></td>
+                            <td>
+                                <form id="deleteForm-file-{{ file.id }}"
+                                      action="{% url 'workshop:file-delete' file.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button id="deleteButton-file-{{ file.id }}"
+                                            data-form-id="deleteForm-file-{{ file.id }}" class="btn btn-danger"
+                                            type="button">Usuń
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
