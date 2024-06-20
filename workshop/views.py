@@ -21,7 +21,8 @@ from workshop.forms import (
     SearchEstimateForm,
     EstimateCostsForm,
     RepairItemCostsForm,
-    RepairItemUpdateStatusForm, NotesForm
+    RepairItemUpdateStatusForm, NotesForm, CustomerCreateForm, RepairItemUpdateForm, EstimateUpdateForm,
+    NotesUpdateForm, CostsUpdateForm
 )
 from workshop.services.costs import calculate_total_costs_by_repair_item, calculate_total_costs_by_estimate
 from workshop.services.filename_generator import generate_filename_timestamp
@@ -33,6 +34,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When
 from django.db import models
+from django.db.models import Q
 
 
 class AdmissionProtocolView(LoginRequiredMixin, View):
@@ -81,7 +83,7 @@ class CustomerListView(LoginRequiredMixin, ListView):
 
 class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
-    fields = ["name", "phone", "email"]
+    form_class = CustomerCreateForm
     template_name = "workshop/customer_create.html"
 
     def get_success_url(self):
@@ -95,7 +97,7 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
 class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     model = Customer
-    fields = ["name", "phone", "email"]
+    form_class = CustomerCreateForm
     template_name = "workshop/customer_update.html"
 
     def get_success_url(self):
@@ -141,7 +143,7 @@ class RepairItemListView(LoginRequiredMixin, ListView):
         search_query = self.request.GET.get("search_query")
         if search_query:
             queryset = queryset.filter(
-                serial_number__icontains=search_query
+                Q(serial_number__icontains=search_query) | Q(name__icontains=search_query)
             )
 
         status = self.request.GET.get("status")
@@ -210,7 +212,7 @@ class RepairItemCreateView(LoginRequiredMixin, CreateView):
             customer_phone = form.cleaned_data.get('customer_phone')
             customer_name = form.cleaned_data.get('customer_name')
 
-            existing_customer = Customer.objects.filter(email=customer_email).first()
+            existing_customer = Customer.objects.filter(phone=customer_phone).first()
 
             if existing_customer:
                 customer = existing_customer
@@ -230,17 +232,7 @@ class RepairItemCreateView(LoginRequiredMixin, CreateView):
 
 class RepairItemUpdateView(LoginRequiredMixin, UpdateView):
     model = RepairItem
-    fields = [
-        "serial_number",
-        "password",
-        "visual_status",
-        "todo",
-        "additional_info",
-        "done",
-        "status",
-        "priority",
-        "customer"
-    ]
+    form_class = RepairItemUpdateForm
     template_name = "workshop/repair_item_update.html"
 
     def get_success_url(self):
@@ -320,7 +312,7 @@ def repair_item_update_status(request, pk):
 
 class CostsUpdateView(LoginRequiredMixin, UpdateView):
     model = Costs
-    fields = ["amount", "cost_type", "repair_item"]
+    form_class = CostsUpdateForm
     template_name = "workshop/costs_update.html"
 
     def get_success_url(self):
@@ -379,12 +371,14 @@ def estimate_detail(request, pk: int):
         form = EstimateCostsForm(initial={'estimate': estimate})
 
     costs = estimate.costs.all()
+    notes = Notes.objects.filter(estimate=estimate)
 
     context = {
         'estimate': estimate,
         'costs': costs,
         'total_costs': calculate_total_costs_by_estimate(costs),
-        'form': form
+        'form': form,
+        'notes': notes,
     }
 
     return render(request, 'workshop/estimate_detail.html', context)
@@ -430,10 +424,7 @@ class EstimateCreateView(LoginRequiredMixin, CreateView):
 
 class EstimateUpdateView(LoginRequiredMixin, UpdateView):
     model = Estimate
-    fields = [
-        "name",
-        "customer",
-    ]
+    form_class = EstimateUpdateForm
     template_name = "workshop/estimate_update.html"
 
     def get_success_url(self):
@@ -463,7 +454,7 @@ def convert_estimate_to_repair_item(request, pk):
         return redirect('workshop:repair-item-detail', pk=estimate.repair_item.pk)
 
     repair_item = RepairItem.objects.create(
-        serial_number=estimate.name,
+        name=estimate.name,
         customer=estimate.customer,
     )
 
@@ -512,11 +503,50 @@ class CreateNotesPerRepairItemView(View):
                 file_instance = Files.objects.create(file=generate_filename_timestamp(file))
                 note.files.add(file_instance)
 
-            return redirect('workshop:repair-item-detail',  pk=repairitem.pk)
+            return redirect('workshop:repair-item-detail', pk=repairitem.pk)
 
         context = {
             'form': form,
             'repairitem': repairitem,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+
+class CreateNotesPerEstimateView(View):
+    def get(self, request, pk: int):
+        estimate = get_object_or_404(Estimate, id=pk)
+        form = NotesForm()
+        context = {
+            'form': form,
+            'estimate': estimate,
+        }
+        return render(request, 'workshop/notes_create.html', context)
+
+    def post(self, request, pk: int):
+        estimate = get_object_or_404(Estimate, id=pk)
+        form = NotesForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            text = form.cleaned_data['text']
+
+            note = Notes.objects.create(
+                name=name,
+                text=text,
+                estimate=estimate,
+                customer=estimate.customer
+            )
+
+            files = request.FILES.getlist('listing_images')
+            for file in files:
+                file_instance = Files.objects.create(file=generate_filename_timestamp(file))
+                note.files.add(file_instance)
+
+            return redirect('workshop:estimate-detail', pk=estimate.pk)
+
+        context = {
+            'form': form,
+            'estimate': estimate,
         }
         return render(request, 'workshop/notes_create.html', context)
 
@@ -561,7 +591,7 @@ class CreateNotesPerCustomerItemView(View):
 
 class NotesUpdateView(LoginRequiredMixin, UpdateView):
     model = Notes
-    fields = ["name", "text"]
+    form_class = NotesUpdateForm
     template_name = "workshop/notes_update.html"
 
     def get_success_url(self):

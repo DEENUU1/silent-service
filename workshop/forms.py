@@ -47,7 +47,7 @@ class RepairItemPriorityForm(forms.Form):
         ("high", "Wysoki"),
     )
 
-    priority = forms.ChoiceField(choices=PRIORITY, required=False)
+    priority = forms.ChoiceField(choices=PRIORITY, required=False, label="Priorytet")
 
 
 class EstimateCreateForm(forms.ModelForm):
@@ -68,7 +68,7 @@ class EstimateCreateForm(forms.ModelForm):
         customer_phone = cleaned_data.get('customer_phone')
         customer_name = cleaned_data.get('customer_name')
 
-        if not customer and not (customer_email and customer_phone and customer_name):
+        if not customer and not (customer_phone and customer_name):
             raise forms.ValidationError("You must select a customer or provide customer details.")
 
         return cleaned_data
@@ -79,7 +79,8 @@ class EstimateCreateForm(forms.ModelForm):
 
 
 class RepairItemCreateForm(forms.ModelForm):
-    serial_number = forms.CharField(max_length=100, required=True, label="Numer seryjny")
+    name = forms.CharField(max_length=100, required=True, label="Nazwa")
+    serial_number = forms.CharField(max_length=100, required=False, label="Numer seryjny")
     password = forms.CharField(max_length=100, required=False, label="Hasło zabezpieczające")
     visual_status = forms.CharField(
         label="Stan wizualny",
@@ -121,14 +122,14 @@ class RepairItemCreateForm(forms.ModelForm):
         customer_phone = cleaned_data.get('customer_phone')
         customer_name = cleaned_data.get('customer_name')
 
-        if not customer and not (customer_email and customer_phone and customer_name):
+        if not customer and not (customer_phone and customer_name):
             raise forms.ValidationError("You must select a customer or provide customer details.")
 
         return cleaned_data
 
     class Meta:
         model = RepairItem
-        fields = ['serial_number', 'password', 'visual_status', 'todo', 'additional_info', 'priority', 'customer']
+        fields = ['name', 'serial_number', 'password', 'visual_status', 'todo', 'additional_info', 'priority', 'customer']
 
 
 class EstimateCostsForm(forms.ModelForm):
@@ -177,9 +178,73 @@ class NotesForm(forms.ModelForm):
     class Meta:
         model = Notes
         fields = ['name', 'text']
+        labels = {
+            'name': 'Tytuł',
+            'text': 'Treść'
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class CustomerCreateForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ("name", "email", "phone")
+        labels = {
+            "name": "Imie i nazwisko",
+            "email": "Email",
+            "phone": "Numer telefonu",
+        }
+
+
+class RepairItemUpdateForm(forms.ModelForm):
+    class Meta:
+        model = RepairItem
+        fields = ['name', 'serial_number', 'status', 'done', 'password', 'visual_status', 'todo', 'additional_info', 'priority', 'customer']
+        labels = {
+            'name': 'Nazwa',
+            'serial_number': 'Numer seryjny',
+            'password': 'Hasło zabezpieczające',
+            'visual_status': 'Stan wizualny',
+            'todo': 'Do zrobienia',
+            'additional_info': 'Dodatkowe informacje',
+            'done': 'Zrobione',
+            'status': 'Zakończone',
+            'priority': 'Priorytet',
+            'customer': 'Klient',
+        }
+
+
+class EstimateUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Estimate
+        fields = ['name', 'customer']
+        labels = {
+            'name': 'Nazwa',
+            'customer': 'Klient',
+        }
+
+
+class NotesUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Notes
+        fields = ['name', 'text']
+        labels = {
+            'name': 'Tytuł',
+            'text': 'Treść'
+        }
+
+
+class CostsUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Costs
+        fields = ['name', 'cost_type', 'amount']
+        labels = {
+            'name': 'Nazwa',
+            'cost_type': 'Typ',
+            'amount': 'Kwota',
+        }

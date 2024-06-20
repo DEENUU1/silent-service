@@ -138,6 +138,7 @@
         <table class="table table-hover">
             <thead>
             <tr>
+                <th scope="col">Nazwa</th>
                 <th scope="col">Numer seryjny</th>
                 <th scope="col">Klient</th>
                 <th scope="col">Status</th>
@@ -150,7 +151,8 @@
             <tbody>
             {% for object in object_list %}
                 <tr>
-                    <td><a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.serial_number }}</a></td>
+                    <td><a href="{% url 'workshop:repair-item-detail' object.id %}">{{ object.name }}</a></td>
+                    <td>{{ object.serial_number }}</td>
                     <td><a href="{% url 'workshop:customer-detail' object.customer.id %}">{{ object.customer.name }}</a>
                     </td>
                     <td>

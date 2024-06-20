@@ -131,10 +131,12 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
+                        <th scope="col">Nazwa</th>
                         <th scope="col">Numer seryjny</th>
                         <th scope="col">Klient</th>
                         <th scope="col">Status</th>
                         <th scope="col">Priorytet</th>
+                        <th scope="col">Data dodania</th>
                         <th scope="col">Edytuj</th>
                         <th scope="col">Usuń</th>
                     </tr>
@@ -142,8 +144,8 @@
                     <tbody>
                     {% for item in repair_items %}
                         <tr>
-                            <td><a href="{% url 'workshop:repair-item-detail' item.id %}">{{ item.serial_number }}</a>
-                            </td>
+                            <td><a href="{% url 'workshop:repair-item-detail' item.id %}">{{ item.name }}</a>
+                            <td>{{ item.serial_number }}</td>
                             <td>
                                 <a href="{% url 'workshop:customer-detail' item.customer.id %}">{{ item.customer.name }}</a>
                             </td>
@@ -163,6 +165,7 @@
                                     <span class="text-danger">Wysoki</span>
                                 {% endif %}
                             </td>
+                            <td><span>{{ item.created_at }}</span></td>
                             <td><a href="{% url 'workshop:repair-item-update' item.id %}">Edytuj</a></td>
                             <td>
                                 <form id="deleteForm-item-{{ item.id }}"
@@ -190,6 +193,7 @@
                     <tr>
                         <th scope="col">Nazwa</th>
                         <th scope="col">Klient</th>
+                        <th scope="col">Data dodania</th>
                         <th scope="col">Edytuj</th>
                         <th scope="col">Usuń</th>
                     </tr>
@@ -200,6 +204,9 @@
                             <td><a href="{% url 'workshop:estimate-detail' estimate.id %}">{{ estimate.name }}</a></td>
                             <td>
                                 <a href="{% url 'workshop:customer-detail' estimate.customer.id %}">{{ estimate.customer.name }}</a>
+                            </td>
+                            <td>
+                                <span>{{ estimate.created_at }}</span>
                             </td>
                             <td><a href="{% url 'workshop:estimate-update' estimate.id %}">Edytuj</a></td>
                             <td>

@@ -11,7 +11,7 @@ from warehouse.models import Device, DeviceType
 from warehouse.forms import (
     SearchForm,
     DeviceTypeForm,
-    DeviceTypeSearchForm
+    DeviceTypeSearchForm, DeviceCreateForm, DeviceTypeCreateForm
 )
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -45,8 +45,8 @@ class DeviceListView(LoginRequiredMixin, ListView):
 
 class DeviceCreateView(LoginRequiredMixin, CreateView):
     model = Device
+    form_class = DeviceCreateForm
     template_name = "warehouse/device_create.html"
-    fields = ("name", "quantity", "device_type")
 
     def get_success_url(self):
         messages.success(self.request, "Przedmiot został dodany")
@@ -66,7 +66,7 @@ class DeviceCreateView(LoginRequiredMixin, CreateView):
 class DeviceUpdateView(LoginRequiredMixin, UpdateView):
     model = Device
     template_name = "warehouse/device_update.html"
-    fields = ("name", "quantity", "device_type")
+    form_class = DeviceCreateForm
 
     def get_success_url(self):
         messages.success(self.request, "Przedmiot został zaktualizowany")
@@ -112,7 +112,7 @@ class DeviceTypeListView(LoginRequiredMixin, ListView):
 class DeviceTypeCreateView(LoginRequiredMixin, CreateView):
     model = DeviceType
     template_name = "warehouse/device_type_create.html"
-    fields = ("name",)
+    form_class = DeviceTypeCreateForm
 
     def get_success_url(self):
         messages.success(self.request, "Kategoria została dodana")
@@ -137,7 +137,7 @@ class DeviceTypeDetailView(LoginRequiredMixin, DetailView):
 class DeviceTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = DeviceType
     template_name = "warehouse/device_type_update.html"
-    fields = ("name",)
+    form_class = DeviceTypeCreateForm
 
     def get_success_url(self):
         messages.success(self.request, "Kategoria została zaaktualizowana")

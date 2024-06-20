@@ -134,7 +134,6 @@
                 }
             });
 
-            // Dodajemy obsługę kliknięcia na podpowiedź
             $('#costs-suggestions').on('click', 'li', function () {
                 var name = $(this).data('name');
                 var amount = $(this).data('amount');
@@ -146,7 +145,6 @@
                 $('#costs-suggestions').empty();
             });
 
-            // Obsługa nawigacji klawiaturą
             $('#id_name').on('keydown', function (e) {
                 var suggestionItems = $('#costs-suggestions li');
                 if (suggestionItems.length > 0) {
@@ -179,7 +177,7 @@
         <div class="">
             <div class="row">
                 <div class="col">
-                    <h1 class="h3">Szczegóły zlecenia: {{ object.serial_number }}</h1>
+                    <h1 class="h3">Szczegóły zlecenia: {{ object.name }}</h1>
                 </div>
             </div>
             <div class="row">
@@ -344,9 +342,9 @@
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
                                         {% if cost.cost_type == "cost" %}
-                                            <p class="mb-1"><strong>Kwota:</strong> - {{ cost.amount }}</p>
+                                            <p class="mb-1"><strong>Kwota:</strong> - {{ cost.amount }} - {{ cost.name }}</p>
                                         {% else %}
-                                            <p class="mb-1"><strong>Kwota:</strong> + {{ cost.amount }}</p>
+                                            <p class="mb-1"><strong>Kwota:</strong> + {{ cost.amount }} - {{ cost.name }}</p>
                                         {% endif %}
                                     </div>
                                     <div>
@@ -366,23 +364,23 @@
                         <form autocomplete="off" method="post" class="mb-4">
                             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                             <div id="div_id_name" class="mb-3">
-                                <label for="id_name" class="form-label">Name</label>
+                                <label for="id_name" class="form-label">Nazwa</label>
                                 <input type="text" name="name" maxlength="100" class="textinput form-control"
                                        id="id_name">
                                 <ul id="costs-suggestions" class="list-group"></ul> <!-- Dodaj listę dla podpowiedzi -->
                             </div>
                             <div id="div_id_cost_type" class="mb-3">
                                 <label for="id_cost_type" class="form-label requiredField">
-                                    Cost type<span class="asteriskField">*</span>
+                                    Typ<span class="asteriskField">*</span>
                                 </label>
                                 <select name="cost_type" class="select form-select" required="" id="id_cost_type">
                                     <option value="" selected="">---------</option>
-                                    <option value="cost">Cost</option>
-                                    <option value="profit">Profit</option>
+                                    <option value="cost">Koszt</option>
+                                    <option value="profit">Zarobek</option>
                                 </select>
                             </div>
                             <div id="div_id_amount" class="mb-3">
-                                <label for="id_amount" class="form-label requiredField">Amount<span
+                                <label for="id_amount" class="form-label requiredField">Kwota<span
                                         class="asteriskField">*</span></label>
                                 <input type="number" name="amount" step="0.01" class="numberinput form-control"
                                        required="" id="id_amount">

@@ -29,7 +29,8 @@ from workshop.views import (
     NotesDeleteView,
     FileCreateByNotesView,
     FileDeleteView,
-    autocomplete_costs
+    autocomplete_costs,
+    CreateNotesPerEstimateView
 )
 
 app_name = "workshop"
@@ -64,6 +65,7 @@ urlpatterns = [
     path('costs/<int:pk>/update/', CostsUpdateView.as_view(), name="costs-update"),
 
     path('note/<int:pk>/', CreateNotesPerRepairItemView.as_view(), name="note-repair-item-create"),
+    path('note/<int:pk>/estimate', CreateNotesPerEstimateView.as_view(), name="note-estimate-create"),
     path('note/<int:pk>/customer', CreateNotesPerCustomerItemView.as_view(), name="note-customer-create"),
     path('note/<int:pk>/update', NotesUpdateView.as_view(), name="notes-update"),
     path('note/<int:pk>/detail', NotesDetailView.as_view(), name="notes-detail"),

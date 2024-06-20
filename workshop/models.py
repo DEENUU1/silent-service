@@ -5,7 +5,7 @@ from utils.base_model import BaseModel
 
 class Customer(BaseModel):
     name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100, null=True, blank=True)
     phone = models.CharField(max_length=100)
 
     def __str__(self):
@@ -23,9 +23,9 @@ class RepairItem(BaseModel):
         ('medium', 'Medium'),
         ('high', 'High'),
     )
-
-    serial_number = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    serial_number = models.CharField(max_length=100, null=True, blank=True)
+    password = models.CharField(max_length=100, null=True, blank=True)
     visual_status = models.TextField(blank=True, null=True)
     todo = models.TextField(blank=True, null=True)
     done = models.TextField(blank=True, null=True)
@@ -101,6 +101,7 @@ class Notes(BaseModel):
     text = models.TextField(null=True, blank=True)
     repair_item = models.ForeignKey(RepairItem, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
+    estimate = models.ForeignKey(Estimate, on_delete=models.CASCADE, related_name='notes', null=True, blank=True)
     files = models.ManyToManyField(Files, related_name='notes', blank=True)
 
     def __str__(self):

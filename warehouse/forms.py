@@ -1,5 +1,5 @@
 from django import forms
-from warehouse.models import DeviceType
+from warehouse.models import DeviceType, Device
 
 
 class SearchForm(forms.Form):
@@ -27,3 +27,24 @@ class DeviceTypeForm(forms.Form):
         required=False,
         label="Typ urządzenia",
     )
+
+
+class DeviceCreateForm(forms.ModelForm):
+    class Meta:
+        model = Device
+        fields = ("name", "quantity", "device_type")
+        labels = {
+            "name": "Nazwa urządzenia",
+            "quantity": "Ilość",
+            "device_type": "Typ urządzenia",
+        }
+
+
+class DeviceTypeCreateForm(forms.ModelForm):
+    class Meta:
+        model = DeviceType
+        fields = ("name", )
+        labels = {
+            "name": "Nazwa",
+        }
+

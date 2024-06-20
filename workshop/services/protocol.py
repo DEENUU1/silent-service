@@ -21,15 +21,17 @@ def add_text(elements: List, style, text: str) -> None:
 
 def get_paragraph_style() -> Any:
     paragraph_style = ParagraphStyle('services_description')
-    paragraph_style.fontName = 'Verdana'
-    paragraph_style.fontSize = 6
+    paragraph_style.fontName = 'Abhaya'
+    paragraph_style.fontSize = 8
+    paragraph_style.bold = False
     return paragraph_style
 
 
 def get_header_style() -> Any:
     header_style = ParagraphStyle('header')
-    header_style.fontName = 'Verdana'
+    header_style.fontName = 'Abhaya'
     header_style.fontSize = 10
+    header_style.bold = True
     return header_style
 
 
@@ -48,7 +50,7 @@ def generate_estimate(estimate: Estimate):
     header_style = get_header_style()
 
     buffer = io.BytesIO()
-    pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
+    pdfmetrics.registerFont(TTFont("Abhaya", "Abhaya.ttf"))
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
@@ -83,7 +85,7 @@ def generate_estimate(estimate: Estimate):
     estimate_table = Table(estimate_data, colWidths=col_widths)
 
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
+        ('FONT', (0, 0), (-1, -1), 'Abhaya', 8),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -113,13 +115,14 @@ def generate_acceptance_protocol(repair_item: RepairItem):
     header_style = get_header_style()
 
     buffer = io.BytesIO()
-    pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
+    pdfmetrics.registerFont(TTFont("Abhaya", "Abhaya.ttf"))
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
     header_text = "PROTOKÓŁ PRZYJĘCIA SPRZĘTU DO SERWISU"
     services_description = f"Usługi serwisowe (naprawa, konfiguracja, diagnoza/sprawdzenie, czyszczenie). Dokładny opis wykonanych rzeczy:"
-    signature = "Podpis Zleceniodawcy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data i podpis osoby odbierającej sprzęt: "
+    signature_left = "Podpis Zleceniodawcy"
+    signature_right = "Data i podpis osoby odbierającej sprzęt"
 
     logo_path = 'logo.png'
     logo = Image(logo_path)
@@ -142,7 +145,7 @@ def generate_acceptance_protocol(repair_item: RepairItem):
 
     table = Table(data)
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
+        ('FONT', (0, 0), (-1, -1), 'Abhaya', 8),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -159,7 +162,20 @@ def generate_acceptance_protocol(repair_item: RepairItem):
     add_spaces(elements)
     add_text(elements, style, f"{repair_item.done if repair_item.done else '...'}")
     add_spaces(elements)
-    add_text(elements, style, signature)
+
+    signature_data = [
+        [signature_left, signature_right]
+    ]
+
+    signature_table = Table(signature_data, colWidths=[3 * inch, 3 * inch])
+    signature_table_style = [
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ('FONT', (0, 0), (-1, -1), 'Abhaya', 10),
+    ]
+
+    signature_table.setStyle(signature_table_style)
+    elements.append(signature_table)
 
     doc.build(elements)
 
@@ -170,18 +186,18 @@ def generate_acceptance_protocol(repair_item: RepairItem):
     return buffer, filename
 
 
-def generate_admission_protocol(repair_item: RepairItem):
+def generate_admission_protocol(repair_item):
     style = get_paragraph_style()
     header_style = get_header_style()
 
     buffer = io.BytesIO()
-    pdfmetrics.registerFont(TTFont("Verdana", "Verdana.ttf"))
+    pdfmetrics.registerFont(TTFont("Abhaya", "Abhaya.ttf"))
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
 
     visual_text = "Stan wizualny:"
     header_text = "PROTOKÓŁ PRZYJĘCIA SPRZĘTU DO SERWISU"
-    services_description = f"Usługi serwisowe (naprawa, konfiguracja, diagnoza/sprawdzenie, czyszczenie). Dokładny opis usterki:"
+    services_description = "Usługi serwisowe (naprawa, konfiguracja, diagnoza/sprawdzenie, czyszczenie). Dokładny opis usterki:"
     statute_description_1 = "1.Klient zobowiązany jest do umieszczenia w Zleceniu prawdziwych danych osobowych oraz wskazania danych umożliwiających nawiązanie z nim kontaktu przez Serwis"
     statute_description_2 = "2.Serwis, w sytuacjach określonych w niniejszym Regulaminie, będzie nawiązywał kontakt z Klientem za pomocą: telefonicznie i/lub pocztą elektroniczną , w zależności od danych wskazanych przez Klienta w Zleceniu."
     statute_description_3 = "3.Klient ma prawo do odstąpienia od umowy serwisowej w przypadku, gdy nie zaakceptuje kosztów związanych z naprawą urządzenia. W celu odstąpienia od umowy serwisowej Klient zobowiązany jest złożyć, stosowne oświadczenie na piśmie do siedziby Serwisu."
@@ -192,7 +208,9 @@ def generate_admission_protocol(repair_item: RepairItem):
     statute_description_8 = "8.W przypadku nie odebrania powierzonego sprzętu przez klienta w ciągu 3 miesięcy od daty powiadomienia o możliwości odbioru sprzętu. Powierzone urządzenie uważa się za porzucone w rozumieniu art. 180 kodeksu cywilnego. W tym wypadku zostaje zezłomowane lub sprzedane na wolnym rynku, w celu zwrotu poniesionych kosztów przez serwis. wypowiedzenia umowy lub odstąpienia od umowy przez Klienta, jeżeli w tym czasie nie odebrał on sprzętu od Serwisu. Opłata magazynowa jest doliczana do ceny usług serwisowej oraz płatna przed wydaniem sprzętu Klientowi."
     statute_description_9 = "9.Oddając sprzęt do naprawy Klient dobrowolnie akceptuje niniejszy Regulamin, a jego postanowienia są wiążące dla Klienta i Serwisu chyba, że inne postanowienia zostaną przedstawione i zaakceptowane przez obie strony w formie pisemnej."
     statute_end = "Niniejszy Protokół jest dokumentem uprawniającym do odbioru sprzętu."
-    signature = "Podpis Zleceniodawcy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data i podpis osoby odbierającej sprzęt: "
+    signature_left = "Podpis Zleceniodawcy"
+    signature_right = "Data i podpis osoby odbierającej sprzęt"
+
     statutes = [statute_description_1, statute_description_2, statute_description_3, statute_description_4,
                 statute_description_5, statute_description_6, statute_description_7, statute_description_8,
                 statute_description_9]
@@ -218,7 +236,7 @@ def generate_admission_protocol(repair_item: RepairItem):
 
     table = Table(data)
     table_style = [
-        ('FONT', (0, 0), (-1, -1), 'Verdana', 6),
+        ('FONT', (0, 0), (-1, -1), 'Abhaya', 8),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
@@ -246,7 +264,20 @@ def generate_admission_protocol(repair_item: RepairItem):
     add_spaces(elements)
     add_text(elements, style, statute_end)
     add_spaces(elements)
-    add_text(elements, style, signature)
+
+    signature_data = [
+        [signature_left, signature_right]
+    ]
+
+    signature_table = Table(signature_data, colWidths=[3 * inch, 3 * inch])
+    signature_table_style = [
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),
+        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ('FONT', (0, 0), (-1, -1), 'Abhaya', 10),
+    ]
+
+    signature_table.setStyle(signature_table_style)
+    elements.append(signature_table)
 
     doc.build(elements)
 
