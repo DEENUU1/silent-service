@@ -2,7 +2,7 @@ import uuid
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 import io
 from reportlab.pdfbase.ttfonts import TTFont
@@ -78,7 +78,6 @@ def generate_estimate(estimate: Estimate):
         estimate_data.append([cost.name, f"{cost.amount} zł"])
     estimate_data.append(["Kwota całkowita", f"{sum(c.amount for c in estimate_costs)} zł"])
 
-    # Define column widths for consistency
     col_widths = [3 * inch, 3 * inch]
 
     table = Table(data, colWidths=col_widths)
@@ -138,7 +137,7 @@ def generate_acceptance_protocol(repair_item: RepairItem):
         ["Data przyjęcia", f"{str(repair_item.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{repair_item.customer.phone}"],
         ["Adres email:", f"{repair_item.customer.email}"],
-        ["Nazwa sprzętu:", ""],
+        ["Nazwa sprzętu:", f"{repair_item.name}"],
         ["Numery seryjne:", f"{repair_item.serial_number}"],
         ["Hasło zabezpieczające:", f"{repair_item.password}"],
     ]
@@ -229,7 +228,7 @@ def generate_admission_protocol(repair_item):
         ["Data przyjęcia", f"{str(repair_item.created_at)[:11]}"],
         ["Telefon kontaktowy:", f"{repair_item.customer.phone}"],
         ["Adres email:", f"{repair_item.customer.email}"],
-        ["Nazwa sprzętu:", ""],
+        ["Nazwa sprzętu:", f"{repair_item.name}"],
         ["Numery seryjne:", f"{repair_item.serial_number}"],
         ["Hasło zabezpieczające:", f"{repair_item.password}"],
     ]

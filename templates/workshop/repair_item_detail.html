@@ -210,7 +210,7 @@
                             </div>
                         </div>
 
-                        <form action="{% url 'workshop:repair-item-delete' object.id %}" method="POST"
+                        <form id="deleteForm" action="{% url 'workshop:repair-item-delete' object.id %}" method="POST"
                               class="d-inline-block">
                             {% csrf_token %}
                             <button id="deleteButton" class="btn btn-danger" type="submit">Usuń</button>

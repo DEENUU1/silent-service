@@ -7,24 +7,29 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var deleteForm = document.getElementById('deleteForm');
-            var deleteButton = document.getElementById('deleteButton');
+            var deleteButtons = document.querySelectorAll('button[id^="deleteButton"]');
             var confirmDeleteButton = document.getElementById('confirmDelete');
             var closeModalButtons = document.querySelectorAll('[data-dismiss="modal"]');
+            var targetForm = null;
 
-            deleteButton.addEventListener('click', function (event) {
-                event.preventDefault();
-                $('#confirmDeleteModal').modal('show');
+            deleteButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    targetForm = document.getElementById(button.dataset.formId);
+                    $('#confirmDeleteModal').modal('show');
+                });
+            });
+
+            confirmDeleteButton.addEventListener('click', function () {
+                if (targetForm) {
+                    targetForm.submit();
+                }
             });
 
             closeModalButtons.forEach(function (button) {
                 button.addEventListener('click', function () {
                     $('#confirmDeleteModal').modal('hide');
                 });
-            });
-
-            confirmDeleteButton.addEventListener('click', function () {
-                deleteForm.submit();
             });
         });
     </script>
@@ -87,9 +92,12 @@
                             </div>
                         </div>
 
-                        <form action="{% url 'workshop:customer-delete' object.id %}" method="POST">
+                      <form id="deleteForm-{{ object.id }}" action="{% url 'workshop:customer-delete' object.id %}"
+                              method="POST">
                             {% csrf_token %}
-                            <button id="deleteButton" class="btn btn-danger" type="submit">Usuń</button>
+                            <button id="deleteButton-{{ object.id }}" data-form-id="deleteForm-{{ object.id }}"
+                                    class="btn btn-danger" type="button">Usuń
+                            </button>
                         </form>
                     </td>
                 </tr>
