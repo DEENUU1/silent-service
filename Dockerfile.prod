@@ -18,4 +18,5 @@ COPY . /app/
 
 RUN mkdir -p /app/staticfiles
 
+RUN pip install psycopg
 RUN python manage.py collectstatic --noinput
