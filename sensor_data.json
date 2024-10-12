@@ -1,0 +1,410 @@
+{
+    "Cpu": [
+        {
+            "Name": "CPU Core #1",
+            "Value": 21.661425,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #2",
+            "Value": 11.154276,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #3",
+            "Value": 17.351759,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #4",
+            "Value": 11.792427,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #5",
+            "Value": 10.872626,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #6",
+            "Value": 8.494091,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #7",
+            "Value": 5.4072857,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #8",
+            "Value": 4.017049,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #9",
+            "Value": 7.4676275,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #10",
+            "Value": 5.3542433,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #11",
+            "Value": 4.080802,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core #12",
+            "Value": 10.296494,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Total",
+            "Value": 9.829169,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "CPU Core Max",
+            "Value": 21.661425,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Package",
+            "Value": 14.900841,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #1",
+            "Value": 4441.9956,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #1",
+            "Value": 44.5,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #1 (SMU)",
+            "Value": 2.2896502,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #1 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core #2",
+            "Value": 3553.5964,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #2",
+            "Value": 35.6,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #2 (SMU)",
+            "Value": 1.9329557,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #2 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core #3",
+            "Value": 4441.9956,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #3",
+            "Value": 44.5,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #3 (SMU)",
+            "Value": 1.4082472,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #3 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core #4",
+            "Value": 3553.5964,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #4",
+            "Value": 35.6,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #4 (SMU)",
+            "Value": 0.67064416,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #4 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core #5",
+            "Value": 3553.5964,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #5",
+            "Value": 35.6,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #5 (SMU)",
+            "Value": 0.9620788,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #5 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core #6",
+            "Value": 4441.9956,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "Core #6",
+            "Value": 44.5,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "Core #6 (SMU)",
+            "Value": 1.0287877,
+            "SensorType": "Power"
+        },
+        {
+            "Name": "Core #6 VID",
+            "Value": 1.30625,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Core (Tctl/Tdie)",
+            "Value": 50.125008,
+            "SensorType": "Temperature"
+        },
+        {
+            "Name": "Core (SVI2 TFN)",
+            "Value": 1.55,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "SoC (SVI2 TFN)",
+            "Value": 1.55,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "Bus Speed",
+            "Value": 99.82012,
+            "SensorType": "Clock"
+        }
+    ],
+    "Memory": [
+        {
+            "Name": "Memory Used",
+            "Value": 19.303146,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Memory Available",
+            "Value": 8.592815,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Memory",
+            "Value": 69.19692,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Virtual Memory Used",
+            "Value": 23.670494,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Virtual Memory Available",
+            "Value": 11.725468,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Virtual Memory",
+            "Value": 66.87343,
+            "SensorType": "Load"
+        }
+    ],
+    "GpuAmd": [
+        {
+            "Name": "Fullscreen FPS",
+            "Value": -1,
+            "SensorType": "Factor"
+        },
+        {
+            "Name": "D3D Dedicated Memory Used",
+            "Value": 989.1094,
+            "SensorType": "SmallData"
+        },
+        {
+            "Name": "D3D Shared Memory Used",
+            "Value": 261.96484,
+            "SensorType": "SmallData"
+        },
+        {
+            "Name": "D3D 3D",
+            "Value": 4.490659,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D High Priority Compute",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Compute 0",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Compute 1",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Video Decode 1",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Video Decode 1",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Video Codec 0",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Copy",
+            "Value": 0.13310432,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Timer 0",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "D3D Security 1",
+            "Value": 0,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "GPU Core",
+            "Value": 400,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "GPU Memory",
+            "Value": 1333,
+            "SensorType": "Clock"
+        },
+        {
+            "Name": "GPU Core",
+            "Value": 0.001,
+            "SensorType": "Voltage"
+        },
+        {
+            "Name": "GPU Core",
+            "Value": 2,
+            "SensorType": "Load"
+        }
+    ],
+    "Storage": [
+        {
+            "Name": "Temperature",
+            "Value": 39,
+            "SensorType": "Temperature"
+        },
+        {
+            "Name": "Available Spare",
+            "Value": 100,
+            "SensorType": "Level"
+        },
+        {
+            "Name": "Available Spare Threshold",
+            "Value": 10,
+            "SensorType": "Level"
+        },
+        {
+            "Name": "Percentage Used",
+            "Value": 0,
+            "SensorType": "Level"
+        },
+        {
+            "Name": "Data Read",
+            "Value": 2388,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Data Written",
+            "Value": 6006,
+            "SensorType": "Data"
+        },
+        {
+            "Name": "Temperature 1",
+            "Value": 59,
+            "SensorType": "Temperature"
+        },
+        {
+            "Name": "Temperature 2",
+            "Value": 36,
+            "SensorType": "Temperature"
+        },
+        {
+            "Name": "Used Space",
+            "Value": 48.840588,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Read Activity",
+            "Value": 0.14048302,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Write Activity",
+            "Value": 0.12317326,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Total Activity",
+            "Value": 0.27215427,
+            "SensorType": "Load"
+        },
+        {
+            "Name": "Read Rate",
+            "Value": 151655.53,
+            "SensorType": "Throughput"
+        },
+        {
+            "Name": "Write Rate",
+            "Value": 633752.9,
+            "SensorType": "Throughput"
+        }
+    ]
+}

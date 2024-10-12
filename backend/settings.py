@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "warehouse",
     "users",
     "workshop",
+    "windows_monitor",
 
     # third party
     "crispy_forms",

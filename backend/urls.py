@@ -25,4 +25,5 @@ urlpatterns = [
     path("warehouse/", include("warehouse.urls")),
     path("user/", include("users.urls")),
     path("", include("workshop.urls")),
+    path("monitor/", include("windows_monitor.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

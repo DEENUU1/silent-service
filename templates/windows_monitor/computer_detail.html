@@ -1,0 +1,509 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block meta_title %} Windows Monitor | {{ computer.system_uuid }} {% endblock %}
+
+{% block content %}
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Computer Detail: {{ computer.system_uuid }}</h1>
+
+        <nav>
+            <ul class="pagination">
+                {% for comp in computers %}
+                    <li class="page-item {% if comp.id == computer.id %}active{% endif %}">
+                        <a class="page-link" href="{% url 'windows_monitor:computer_detail' comp.system_uuid %}">
+                            {{ forloop.revcounter }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    
+          <div class="col-12 mt-4">
+                <h2>Sensors</h2>
+                <div class="row">
+                    <!-- CPU Sensors -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>CPU Sensors</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for sensor in cpu_sensors %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ sensor.name }}
+                                            <span class="badge bg-primary rounded-pill">
+                                                {{ sensor.value|floatformat:2 }}
+                                                {% if sensor.sensor_type == 'Temperature' %}°C
+                                                {% elif sensor.sensor_type == 'Load' %}%
+                                                {% elif sensor.sensor_type == 'Clock' %}MHz
+                                                {% endif %}
+                                            </span>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item">No CPU sensors available.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Sensors -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Memory Sensors</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for sensor in memory_sensors %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ sensor.name }}
+                                            <span class="badge bg-primary rounded-pill">
+                                                {{ sensor.value|floatformat:2 }}
+                                                {% if sensor.sensor_type == 'Load' %}%
+                                                {% elif sensor.sensor_type == 'Data' %}GB
+                                                {% endif %}
+                                            </span>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item">No memory sensors available.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GPU Sensors -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>GPU Sensors</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for sensor in gpu_sensors %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ sensor.name }}
+                                            <span class="badge bg-primary rounded-pill">
+                                                {{ sensor.value|floatformat:2 }}
+                                                {% if sensor.sensor_type == 'Temperature' %}°C
+                                                {% elif sensor.sensor_type == 'Load' %}%
+                                                {% elif sensor.sensor_type == 'Clock' %}MHz
+                                                {% elif sensor.sensor_type == 'SmallData' %}MB
+                                                {% endif %}
+                                            </span>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item">No GPU sensors available.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Storage Sensors -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Storage Sensors</h3>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for sensor in storage_sensors %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ sensor.name }}
+                                            <span class="badge bg-primary rounded-pill">
+                                                {{ sensor.value|floatformat:2 }}
+                                                {% if sensor.sensor_type == 'Temperature' %}°C
+                                                {% elif sensor.sensor_type == 'Load' %}%
+                                                {% elif sensor.sensor_type == 'Data' %}GB
+                                                {% endif %}
+                                            </span>
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item">No storage sensors available.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h2>System Information</h2>
+                {% if system %}
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Build number:</strong> {{ system.build_number }}</li>
+                        <li class="list-group-item"><strong>Caption:</strong> {{ system.caption }}</li>
+                        <li class="list-group-item"><strong>CS name:</strong> {{ system.cs_name }}</li>
+                        <li class="list-group-item"><strong>Country code:</strong> {{ system.country_code }}</li>
+                        <li class="list-group-item"><strong>Timezone:</strong> {{ system.current_timezone }}</li>
+                        <li class="list-group-item"><strong>Install date:</strong> {{ system.install_date }}</li>
+                        <li class="list-group-item"><strong>Last boot up:</strong> {{ system.last_boot_up }}</li>
+                        <li class="list-group-item"><strong>OS language:</strong> {{ system.os_language }}</li>
+                        <li class="list-group-item"><strong>Registered user:</strong> {{ system.registered_user }}</li>
+                        <li class="list-group-item"><strong>Serial number:</strong> {{ system.serial_number }}</li>
+                        {% if system.status %}
+                            <li class="list-group-item"><strong>Status:</strong> OK</li>
+                        {% else %}
+                            <li class="list-group-item"><strong>Status:</strong> BAD</li>
+                        {% endif %}
+                        <li class="list-group-item"><strong>Version:</strong> {{ system.version }}</li>
+
+                    </ul>
+                {% else %}
+                    <p>No system information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Motherboard</h2>
+                {% if motherboard %}
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Motherboard:</strong> {{ motherboard.product }}</li>
+                        <li class="list-group-item"><strong>Manufacturer:</strong> {{ motherboard.manufacturer }}</li>
+                        <li class="list-group-item"><strong>Product:</strong> {{ motherboard.product }}</li>
+                        <li class="list-group-item"><strong>Serial number:</strong> {{ motherboard.serial_number }}</li>
+                    </ul>
+                {% else %}
+                    <p>No motherboard information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>CPU Information</h2>
+                {% if cpus %}
+                    {% for cpu in cpus %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Caption:</strong> {{ cpu.caption }}</li>
+                            <li class="list-group-item"><strong>Current clock
+                                speed:</strong> {{ cpu.current_clock_speed }} MHz
+                            </li>
+                            <li class="list-group-item"><strong>Max clock speed:</strong> {{ cpu.max_clock_speed }} MHz
+                            </li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ cpu.description }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ cpu.name }}</li>
+                            <li class="list-group-item"><strong>Number of cores:</strong> {{ cpu.number_of_cores }}</li>
+                            <li class="list-group-item"><strong>Number of logical
+                                processors:</strong> {{ cpu.number_of_logical_processors }}</li>
+                            <li class="list-group-item"><strong>Processor id:</strong> {{ cpu.processor_id }}</li>
+                            <li class="list-group-item"><strong>Socket
+                                designation:</strong> {{ cpu.socket_designation }}</li>
+
+                            <li class="list-group-item">
+                                <strong>Cores:</strong>
+                                {% if cpu.core_set.all %}
+                                    <ul>
+                                        {% for core in cpu.core_set.all %}
+                                            <li>
+                                                <strong>Core Name:</strong> {{ core.name }}<br>
+                                                <strong>Percent Processor
+                                                    Time:</strong> {{ core.percent_processor_time }}%
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No core information available for this CPU.</p>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No CPU information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Memory Information</h2>
+                {% if memory_modules %}
+                    {% for memory in memory_modules %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Bank Label:</strong> {{ memory.bank_label }}</li>
+                            <li class="list-group-item"><strong>Capacity:</strong> {{ memory.capacity|filesizeformat }}
+                            </li>
+                            <li class="list-group-item"><strong>Max voltage:</strong> {{ memory.max_voltage }}</li>
+                            <li class="list-group-item"><strong>Min voltage:</strong> {{ memory.min_voltage }}</li>
+                            <li class="list-group-item"><strong>Part number:</strong> {{ memory.part_number }}</li>
+                            <li class="list-group-item"><strong>Serial number:</strong> {{ memory.serial_number }}</li>
+                            <li class="list-group-item"><strong>Speed:</strong> {{ memory.speed }} MHz</li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No memory information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>Disk Information</h2>
+                {% if disks %}
+                    {% for disk in disks %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Caption:</strong> {{ disk.caption }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ disk.description }}</li>
+                            <li class="list-group-item"><strong>Firmware revision:</strong> {{ disk.firmware_revision }}
+                            </li>
+                            <li class="list-group-item"><strong>Index:</strong> {{ disk.index }}</li>
+                            <li class="list-group-item"><strong>Model:</strong> {{ disk.model }}</li>
+                            <li class="list-group-item"><strong>Number of partitions:</strong> {{ disk.partitions }}
+                            </li>
+                            <li class="list-group-item"><strong>Size:</strong> {{ disk.size|filesizeformat }}</li>
+                            <li class="list-group-item"><strong>Serial number:</strong> {{ disk.serial_number }}</li>
+
+                            <li class="list-group-item">
+                                <strong>Partitions:</strong>
+                                {% if disk.partition_set.all %}
+                                    <ul>
+                                        {% for partition in disk.partition_set.all %}
+                                            <li>
+                                                <strong>Partition Name:</strong> {{ partition.name }}<br>
+                                                <strong>Bootable:</strong> {{ partition.bootable|yesno:"Yes,No" }}<br>
+                                                <strong>Size:</strong> {{ partition.size|filesizeformat }}<br>
+                                                <strong>Index:</strong> {{ partition.index }}<br>
+                                                <strong>Starting Offset:</strong> {{ partition.starting_offset }}
+                                                {% if partition.volume_set.all %}
+                                                    <br>
+                                                    <strong>Volumes:</strong>
+                                                    <ul>
+                                                        {% for volume in partition.volume_set.all %}
+                                                            <li>
+                                                                <strong>Volume
+                                                                    Caption:</strong> {{ volume.caption }}<br>
+                                                                <strong>File
+                                                                    System:</strong> {{ volume.file_system }}<br>
+                                                                <strong>Free
+                                                                    Space:</strong> {{ volume.free_space|filesizeformat }}<br>
+                                                                <strong>Size:</strong> {{ volume.size|filesizeformat }}<br>
+                                                                <strong>Volume Serial
+                                                                    Number:</strong> {{ volume.volume_serial_number }}
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </li>
+                                            <br>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No partitions for this disk.</p>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No disk information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Network Adapters</h2>
+                {% if network_adapters %}
+                    {% for adapter in network_adapters %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Adapter type:</strong> {{ adapter.adapter_type }}</li>
+                            <li class="list-group-item"><strong>Caption:</strong> {{ adapter.caption }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ adapter.description }}</li>
+                            <li class="list-group-item"><strong>Mac address:</strong> {{ adapter.mac_address }}</li>
+                            <li class="list-group-item"><strong>Manufacturer:</strong> {{ adapter.manufacturer }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ adapter.name }}</li>
+                            <li class="list-group-item"><strong>Network connection
+                                id:</strong> {{ adapter.network_connection_id }}</li>
+                            <li class="list-group-item"><strong>Product name:</strong> {{ adapter.product_name }}</li>
+                            <li class="list-group-item"><strong>Speed:</strong> {{ adapter.speed }}</li>
+                            <li class="list-group-item"><strong>Bytes sent per
+                                second:</strong> {{ adapter.bytes_sent_per_sec }}</li>
+                            <li class="list-group-item"><strong>Bytes received per
+                                second:</strong> {{ adapter.bytes_received_per_sec }}</li>
+                            <li class="list-group-item"><strong>DHCP server:</strong> {{ adapter.dhcp_server }}</li>
+                            <li class="list-group-item"><strong>Default IP gateway
+                                list:</strong> {{ adapter.default_ip_gateway_list }}</li>
+                            <li class="list-group-item"><strong>DNS server search order
+                                list:</strong> {{ adapter.dns_server_search_order_list }}</li>
+                            <li class="list-group-item"><strong>IP address list:</strong> {{ adapter.ip_address_list }}
+                            </li>
+                            <li class="list-group-item"><strong>UP subnet list:</strong> {{ adapter.ip_subnet_list }}
+                            </li>
+                            </li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No network adapter information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>BIOS Information</h2>
+                {% if bios %}
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Version:</strong> {{ bios.version }}</li>
+                        <li class="list-group-item"><strong>Target OS:</strong> {{ bios.target_os }}</li>
+                        <li class="list-group-item"><strong>Minor version:</strong> {{ bios.minor_version }}</li>
+                        <li class="list-group-item"><strong>Major version:</strong> {{ bios.major_version }}</li>
+                        <li class="list-group-item"><strong>Status:</strong> {{ bios.status }}</li>
+                        <li class="list-group-item"><strong>Name:</strong> {{ bios.name }}</li>
+                        <li class="list-group-item"><strong>Manufacturer:</strong> {{ bios.manufacturer }}</li>
+                    </ul>
+                {% else %}
+                    <p>No BIOS information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Video Controllers</h2>
+                {% if video_controllers %}
+                    {% for controller in video_controllers %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Adapter ram:</strong> {{ controller.adapter_ram }}</li>
+                            <li class="list-group-item"><strong>Caption:</strong> {{ controller.caption }}</li>
+                            <li class="list-group-item"><strong>Current bits per
+                                pixel:</strong> {{ controller.current_bits_per_pixel }}</li>
+                            <li class="list-group-item"><strong>Current horizontal
+                                resolution:</strong> {{ controller.current_horizontal_resolution }}</li>
+                            <li class="list-group-item"><strong>Current number of
+                                colors:</strong> {{ controller.current_number_of_colors }}</li>
+                            <li class="list-group-item"><strong>Current refresh
+                                rate:</strong> {{ controller.current_refresh_rate }}</li>
+                            <li class="list-group-item"><strong>Current vertical
+                                resolution:</strong> {{ controller.current_vertical_resolution }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ controller.description }}</li>
+                            <li class="list-group-item"><strong>Driver date:</strong> {{ controller.driver_date }}</li>
+                            <li class="list-group-item"><strong>Driver version:</strong> {{ controller.driver_version }}
+                            </li>
+                            <li class="list-group-item"><strong>Manufacturer:</strong> {{ controller.manufacturer }}
+                            </li>
+                            <li class="list-group-item"><strong>Max refresh
+                                rate:</strong> {{ controller.max_refresh_rate }}</li>
+                            <li class="list-group-item"><strong>Min refresh
+                                rate::</strong> {{ controller.min_refresh_rate }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ controller.name }}</li>
+                            <li class="list-group-item"><strong>Video mode
+                                description:</strong> {{ controller.video_mode_description }}</li>
+                            <li class="list-group-item"><strong>Video
+                                processor:</strong> {{ controller.video_processor }}</li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No video controller information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>Sound Devices</h2>
+                {% if sound_devices %}
+                    {% for device in sound_devices %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Caption:</strong> {{ device.caption }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ device.description }}</li>
+                            <li class="list-group-item"><strong>Manufacturer:</strong> {{ device.manufacturer }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ device.name }}</li>
+                            <li class="list-group-item"><strong>Product name:</strong> {{ device.product_name }}</li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No sound device information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Monitors</h2>
+                {% if monitors %}
+                    {% for monitor in monitors %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Caption:</strong> {{ monitor.caption }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ monitor.description }}</li>
+                            <li class="list-group-item"><strong>Monitor type:</strong> {{ monitor.monitor_type }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ monitor.name }}</li>
+                            <li class="list-group-item"><strong>Pixel X:</strong> {{ monitor.pixel_x_inch }}</li>
+                            <li class="list-group-item"><strong>Pixel Y:</strong> {{ monitor.pixel_y_inch }}</li>
+                            <li class="list-group-item"><strong>Active:</strong> {{ monitor.active }}</li>
+                            <li class="list-group-item"><strong>Manufacturer:</strong> {{ monitor.manufacturer }}</li>
+                            <li class="list-group-item"><strong>Product code:</strong> {{ monitor.product_code }}</li>
+                            <li class="list-group-item"><strong>Serial number:</strong> {{ monitor.serial_number }}</li>
+                            <li class="list-group-item"><strong>User friendly
+                                name:</strong> {{ monitor.user_friendly_name }}</li>
+                            <li class="list-group-item"><strong>Week of
+                                manufacture:</strong> {{ monitor.week_of_manufacture }}</li>
+                            <li class="list-group-item"><strong>Year of
+                                manufacture:</strong> {{ monitor.year_of_manufacture }}</li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No monitor information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>Keyboard</h2>
+                {% if keyboard %}
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Caption:</strong> {{ keyboard.caption }}</li>
+                        <li class="list-group-item"><strong>Description:</strong> {{ keyboard.description }}</li>
+                        <li class="list-group-item"><strong>Name:</strong> {{ keyboard.name }}</li>
+                        <li class="list-group-item"><strong>Number of Function
+                            Keys:</strong> {{ keyboard.number_of_function_keys }}</li>
+
+                    </ul>
+                {% else %}
+                    <p>No keyboard information available.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Mouse</h2>
+                {% if mouse %}
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Caption:</strong> {{ mouse.caption }}</li>
+                        <li class="list-group-item"><strong>Description:</strong> {{ mouse.description }}</li>
+                        <li class="list-group-item"><strong>Manufacturer:</strong> {{ mouse.manufacturer }}</li>
+                        <li class="list-group-item"><strong>Name:</strong> {{ mouse.name }}</li>
+                        <li class="list-group-item"><strong>Number of Buttons:</strong> {{ mouse.number_of_buttons }}
+                        </li>
+                    </ul>
+                {% else %}
+                    <p>No mouse information available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h2>Printers</h2>
+                {% if printers %}
+                    {% for printer in printers %}
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item"><strong>Caption:</strong> {{ printer.caption }}</li>
+                            <li class="list-group-item"><strong>Default:</strong> {{ printer.default }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ printer.description }}</li>
+                            <li class="list-group-item"><strong>Horizontal
+                                resolution:</strong> {{ printer.horizontal_resolution }}</li>
+                            <li class="list-group-item"><strong>Local:</strong> {{ printer.local }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ printer.name }}</li>
+                            <li class="list-group-item"><strong>Network:</strong> {{ printer.network }}</li>
+                            <li class="list-group-item"><strong>Shared:</strong> {{ printer.shared }}</li>
+                            <li class="list-group-item"><strong>Vertical
+                                resolution:</strong> {{ printer.vertical_resolution }}</li>
+                        </ul>
+                    {% endfor %}
+                {% else %}
+                    <p>No printer information available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

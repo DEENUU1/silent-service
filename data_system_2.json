@@ -1,0 +1,380 @@
+{
+    "OperatingSystem": {
+        "Name": "Microsoft Windows 11 Home",
+        "VersionString": "10.0.22631",
+        "Version": "10.0.22631"
+    },
+    "MemoryStatus": {
+        "TotalPhysical": 29953060864,
+        "AvailablePhysical": 4317609984,
+        "TotalPageFile": 40199933952,
+        "AvailablePageFile": 4832354304,
+        "TotalVirtual": 140737488224256,
+        "AvailableVirtual": 138256134504448,
+        "AvailableExtendedVirtual": 0
+    },
+    "BatteryList": [],
+    "BiosList": [
+        {
+            "Caption": "A.F0",
+            "Description": "A.F0",
+            "Manufacturer": "American Megatrends International, LLC.",
+            "Name": "A.F0",
+            "ReleaseDate": "20231011000000.000000+000",
+            "SerialNumber": "To be filled by O.E.M.",
+            "SoftwareElementID": "A.F0",
+            "Version": "ALASKA - 1072009"
+        }
+    ],
+    "ComputerSystemList": [
+        {
+            "Caption": "Systemowy produkt komputerowy",
+            "Description": "Systemowy produkt komputerowy",
+            "IdentifyingNumber": "To be filled by O.E.M.",
+            "Name": "MS-7C56",
+            "SKUNumber": "",
+            "UUID": "04766545-A668-2C17-A937-D843AE4B66F5",
+            "Vendor": "Micro-Star International Co., Ltd.",
+            "Version": "2.0"
+        }
+    ],
+    "CpuList": [
+        {
+            "Caption": "AMD64 Family 25 Model 80 Stepping 0",
+            "CurrentClockSpeed": 4220,
+            "Description": "AMD64 Family 25 Model 80 Stepping 0",
+            "L1InstructionCacheSize": 393216,
+            "L1DataCacheSize": 393216,
+            "L2CacheSize": 3145728,
+            "L3CacheSize": 16777216,
+            "Manufacturer": "AuthenticAMD",
+            "MaxClockSpeed": 3901,
+            "Name": "AMD Ryzen 5 5600G with Radeon Graphics         ",
+            "NumberOfCores": 6,
+            "NumberOfLogicalProcessors": 12,
+            "ProcessorId": "178BFBFF00A50F00",
+            "SecondLevelAddressTranslationExtensions": false,
+            "SocketDesignation": "AM4",
+            "VirtualizationFirmwareEnabled": true,
+            "VMMonitorModeExtensions": false,
+            "PercentProcessorTime": 3,
+            "CpuCoreList": [
+                {
+                    "Name": "0",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "1",
+                    "PercentProcessorTime": 28
+                },
+                {
+                    "Name": "10",
+                    "PercentProcessorTime": 0
+                },
+                {
+                    "Name": "11",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "2",
+                    "PercentProcessorTime": 0
+                },
+                {
+                    "Name": "3",
+                    "PercentProcessorTime": 16
+                },
+                {
+                    "Name": "4",
+                    "PercentProcessorTime": 16
+                },
+                {
+                    "Name": "5",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "6",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "7",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "8",
+                    "PercentProcessorTime": 5
+                },
+                {
+                    "Name": "9",
+                    "PercentProcessorTime": 5
+                }
+            ]
+        }
+    ],
+    "DriveList": [
+        {
+            "PartitionList": [
+                {
+                    "VolumeList": [],
+                    "Bootable": true,
+                    "BootPartition": true,
+                    "Caption": "Dysk #0, partycja #0",
+                    "Description": "Tabela GPT: systemowa",
+                    "DiskIndex": 0,
+                    "Index": 0,
+                    "Name": "Dysk #0, partycja #0",
+                    "PrimaryPartition": true,
+                    "Size": 104857600,
+                    "StartingOffset": 1048576
+                },
+                {
+                    "VolumeList": [
+                        {
+                            "Caption": "C:",
+                            "Compressed": false,
+                            "Description": "Lokalny dysk stały",
+                            "FileSystem": "NTFS",
+                            "FreeSpace": 512999419904,
+                            "Name": "C:",
+                            "Size": 999291875328,
+                            "VolumeName": "",
+                            "VolumeSerialNumber": "F6BA325B"
+                        }
+                    ],
+                    "Bootable": false,
+                    "BootPartition": false,
+                    "Caption": "Dysk #0, partycja #1",
+                    "Description": "Tabela GPT: dane podstawowe",
+                    "DiskIndex": 0,
+                    "Index": 1,
+                    "Name": "Dysk #0, partycja #1",
+                    "PrimaryPartition": true,
+                    "Size": 999291879424,
+                    "StartingOffset": 122683392
+                },
+                {
+                    "VolumeList": [],
+                    "Bootable": false,
+                    "BootPartition": false,
+                    "Caption": "Dysk #0, partycja #2",
+                    "Description": "Tabela GPT: nieznana",
+                    "DiskIndex": 0,
+                    "Index": 2,
+                    "Name": "Dysk #0, partycja #2",
+                    "PrimaryPartition": false,
+                    "Size": 788529152,
+                    "StartingOffset": 999414562816
+                }
+            ],
+            "Caption": "WD Blue SN580 1TB",
+            "Description": "Stacja dysków",
+            "FirmwareRevision": "281010WD",
+            "Index": 0,
+            "Manufacturer": "(Standardowe stacje dysków)",
+            "Model": "WD Blue SN580 1TB",
+            "Name": "\\\\.\\PHYSICALDRIVE0",
+            "Partitions": 3,
+            "SerialNumber": "E823_8FA6_BF53_0001_001B_448B_47DC_3719.",
+            "Size": 1000202273280
+        }
+    ],
+    "KeyboardList": [
+        {
+            "Caption": "Rozszerzona (101 klawiszy lub 102 klawisze)",
+            "Description": "Urządzenie wejściowe USB",
+            "Name": "Rozszerzona (101 klawiszy lub 102 klawisze)",
+            "NumberOfFunctionKeys": 12
+        },
+        {
+            "Caption": "Rozszerzona (101 klawiszy lub 102 klawisze)",
+            "Description": "Urządzenie klawiatury HID",
+            "Name": "Rozszerzona (101 klawiszy lub 102 klawisze)",
+            "NumberOfFunctionKeys": 12
+        }
+    ],
+    "MemoryList": [
+        {
+            "BankLabel": "P0 CHANNEL A",
+            "Capacity": 17179869184,
+            "FormFactor": 8,
+            "Manufacturer": "Unknown",
+            "MaxVoltage": 1200,
+            "MinVoltage": 1200,
+            "PartNumber": "IRX3200D464L16A/16G ",
+            "SerialNumber": "47E81040",
+            "Speed": 2667
+        },
+        {
+            "BankLabel": "P0 CHANNEL B",
+            "Capacity": 17179869184,
+            "FormFactor": 8,
+            "Manufacturer": "Unknown",
+            "MaxVoltage": 1200,
+            "MinVoltage": 1200,
+            "PartNumber": "IRX3200D464L16A/16G ",
+            "SerialNumber": "48E81040",
+            "Speed": 2667
+        }
+    ],
+    "MonitorList": [
+        {
+            "Caption": "",
+            "Description": "",
+            "MonitorManufacturer": "",
+            "MonitorType": "",
+            "Name": "",
+            "PixelsPerXLogicalInch": 0,
+            "PixelsPerYLogicalInch": 0,
+            "Active": true,
+            "ManufacturerName": "GSM",
+            "ProductCodeID": "57A0",
+            "SerialNumberID": "003NDKDB0045",
+            "UserFriendlyName": "W2240",
+            "WeekOfManufacture": 3,
+            "YearOfManufacture": 2010
+        },
+        {
+            "Caption": "Standardowy monitor PnP",
+            "Description": "Standardowy monitor PnP",
+            "MonitorManufacturer": "(Standardowe typy monitorów)",
+            "MonitorType": "Standardowy monitor PnP",
+            "Name": "Standardowy monitor PnP",
+            "PixelsPerXLogicalInch": 96,
+            "PixelsPerYLogicalInch": 96,
+            "Active": true,
+            "ManufacturerName": "ACR",
+            "ProductCodeID": "057F",
+            "SerialNumberID": "2458938706",
+            "UserFriendlyName": "SA240Y",
+            "WeekOfManufacture": 29,
+            "YearOfManufacture": 2019
+        }
+    ],
+    "MotherboardList": [
+        {
+            "Manufacturer": "Micro-Star International Co., Ltd.",
+            "Product": "B550-A PRO (MS-7C56)",
+            "SerialNumber": "07C5623_NC1E611452"
+        }
+    ],
+    "MouseList": [
+        {
+            "Caption": "Mysz zgodna z HID",
+            "Description": "Mysz zgodna z HID",
+            "Manufacturer": "Microsoft",
+            "Name": "Mysz zgodna z HID",
+            "NumberOfButtons": 0
+        }
+    ],
+    "NetworkAdapterList": [
+        {
+            "AdapterType": "Ethernet 802.3",
+            "Caption": "[00000001] Realtek PCIe GbE Family Controller",
+            "Description": "Realtek PCIe GbE Family Controller",
+            "MACAddress": "D8:43:AE:4B:66:F5",
+            "Manufacturer": "Realtek",
+            "Name": "Realtek PCIe GbE Family Controller",
+            "NetConnectionID": "Ethernet",
+            "ProductName": "Realtek PCIe GbE Family Controller",
+            "Speed": 0,
+            "BytesSentPersec": 0,
+            "BytesReceivedPersec": 0,
+            "DefaultIPGatewayList": [],
+            "DHCPServer": "255.255.255.255",
+            "DNSServerSearchOrderList": [],
+            "IPAddressList": [],
+            "IPSubnetList": []
+        },
+        {
+            "AdapterType": "Ethernet 802.3",
+            "Caption": "[00000002] Intel(R) Wi-Fi 6 AX200 160MHz",
+            "Description": "Intel(R) Wi-Fi 6 AX200 160MHz",
+            "MACAddress": "4C:5F:70:D1:B9:9C",
+            "Manufacturer": "Intel Corporation",
+            "Name": "Intel(R) Wi-Fi 6 AX200 160MHz",
+            "NetConnectionID": "Wi-Fi",
+            "ProductName": "Intel(R) Wi-Fi 6 AX200 160MHz",
+            "Speed": 144400000,
+            "BytesSentPersec": 0,
+            "BytesReceivedPersec": 0,
+            "DefaultIPGatewayList": [
+                "172.20.10.1"
+            ],
+            "DHCPServer": "172.20.10.1",
+            "DNSServerSearchOrderList": [
+                "172.20.10.1"
+            ],
+            "IPAddressList": [
+                "172.20.10.2",
+                "fe80::1d36:c38b:3168:4db9"
+            ],
+            "IPSubnetList": [
+                "255.255.255.240",
+                "0.0.0.64"
+            ]
+        }
+    ],
+    "PrinterList": [
+        {
+            "Caption": "Microsoft Print to PDF",
+            "Default": true,
+            "Description": "",
+            "HorizontalResolution": 600,
+            "Local": true,
+            "Name": "Microsoft Print to PDF",
+            "Network": false,
+            "Shared": false,
+            "VerticalResolution": 600
+        }
+    ],
+    "SoundDeviceList": [
+        {
+            "Caption": "Urządzenie audio USB",
+            "Description": "Urządzenie audio USB",
+            "Manufacturer": "(Rodzajowe audio USB)",
+            "Name": "Urządzenie audio USB",
+            "ProductName": "Urządzenie audio USB"
+        },
+        {
+            "Caption": "Realtek High Definition Audio",
+            "Description": "Realtek High Definition Audio",
+            "Manufacturer": "Realtek",
+            "Name": "Realtek High Definition Audio",
+            "ProductName": "Realtek High Definition Audio"
+        },
+        {
+            "Caption": "AMD High Definition Audio Device",
+            "Description": "AMD High Definition Audio Device",
+            "Manufacturer": "Advanced Micro Devices",
+            "Name": "AMD High Definition Audio Device",
+            "ProductName": "AMD High Definition Audio Device"
+        }
+    ],
+    "VideoControllerList": [
+        {
+            "AdapterRAM": 4294967296,
+            "Caption": "AMD Radeon(TM) Graphics",
+            "CurrentBitsPerPixel": 32,
+            "CurrentHorizontalResolution": 1920,
+            "CurrentNumberOfColors": 4294967296,
+            "CurrentRefreshRate": 60,
+            "CurrentVerticalResolution": 1080,
+            "Description": "AMD Radeon(TM) Graphics",
+            "DriverDate": "20230329000000.000000-000",
+            "DriverVersion": "31.0.14046.0",
+            "Manufacturer": "Advanced Micro Devices, Inc.",
+            "MaxRefreshRate": 75,
+            "MinRefreshRate": 50,
+            "Name": "AMD Radeon(TM) Graphics",
+            "VideoModeDescription": "1920 x 1080 x 4294967296 kolorów",
+            "VideoProcessor": "AMD Radeon Graphics Processor (0x1638)"
+        }
+    ],
+    "EthernetIPv4Addresses": [
+        "172.26.32.1"
+    ],
+    "WirelessIPv4Addresses": [
+        "169.254.187.252",
+        "169.254.79.20",
+        "172.20.10.2"
+    ]
+}
